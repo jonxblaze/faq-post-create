@@ -39,6 +39,7 @@ class FAQ_Post_Create {
         require_once plugin_dir_path(__FILE__) . 'includes/class-faq-form-handler.php';
         require_once plugin_dir_path(__FILE__) . 'includes/class-faq-template-handler.php';
         require_once plugin_dir_path(__FILE__) . 'includes/class-faq-admin.php';
+        require_once plugin_dir_path(__FILE__) . 'import-csv.php';
     }
     
     /**
@@ -64,8 +65,29 @@ class FAQ_Post_Create {
         // Activation and deactivation hooks
         register_activation_hook(__FILE__, array(__CLASS__, 'activate'));
         register_deactivation_hook(__FILE__, 'flush_rewrite_rules');
+
+        // Hook to flush rewrite rules when plugin is initialized
+        add_action('init', array($this, 'maybe_flush_rewrite_rules'));
     }
     
+    /**
+     * Maybe flush rewrite rules on init
+     */
+    public function maybe_flush_rewrite_rules() {
+        // Only flush rewrite rules once during plugin initialization
+        if (!get_option('faq_post_creator_rewrite_rules_flushed')) {
+            flush_rewrite_rules();
+            update_option('faq_post_creator_rewrite_rules_flushed', true);
+        }
+    }
+
+    /**
+     * Function to manually flush rewrite rules when needed
+     */
+    public static function flush_faq_rewrite_rules() {
+        flush_rewrite_rules(false);
+    }
+
     /**
      * Enqueue frontend scripts and styles
      */

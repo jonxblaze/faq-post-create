@@ -25,36 +25,46 @@ get_header(); ?>
             </header>
             
             <div class="entry-content">
-                <!-- Display the original FAQ submission -->
-                <div class="faq-submission-section">
-                    <h2><?php _e('Question Details', 'faq-post-create'); ?></h2>
-                    
-                    <div class="faq-submitter-info">
-                        <?php if ($full_name): ?>
-                            <p><strong><?php _e('Name:', 'faq-post-create'); ?></strong> <?php echo esc_html($full_name); ?></p>
-                        <?php endif; ?>
-                    </div>
-                    
-                    <div class="faq-original-question">
-                        <div class="question-content">
-                            <?php echo wp_kses_post($original_question); ?>
-                        </div>
-                    </div>
-                </div>
-                
                 <!-- Admin response section with light background -->
                 <div class="faq-response-section">
                     <h3><?php _e('Response', 'faq-post-create'); ?></h3>
-                    <?php 
+                    <?php
                     // Use a custom meta field for admin response to ensure separation
                     $admin_response = get_post_meta(get_the_ID(), '_faq_admin_response', true);
-                    
+
                     // Only show admin response if there's content in the custom field
                     if (!empty(trim($admin_response))):
                         $response_content = $admin_response;
                         ?>
                         <div class="faq-admin-response">
-                            <?php echo wp_kses_post($response_content); ?>
+                            <?php echo wp_kses(nl2br($response_content), array(
+                                'a' => array(
+                                    'href' => array(),
+                                    'title' => array(),
+                                    'target' => array()
+                                ),
+                                'br' => array(),
+                                'em' => array(),
+                                'strong' => array(),
+                                'p' => array(),
+                                'ul' => array(),
+                                'ol' => array(),
+                                'li' => array(),
+                                'h1' => array(),
+                                'h2' => array(),
+                                'h3' => array(),
+                                'h4' => array(),
+                                'h5' => array(),
+                                'h6' => array(),
+                                'blockquote' => array(),
+                                'code' => array(),
+                                'pre' => array(),
+                                'img' => array(
+                                    'src' => array(),
+                                    'alt' => array(),
+                                    'title' => array()
+                                )
+                            )); ?>
                         </div>
                     <?php else: ?>
                         <p class="no-response-yet">

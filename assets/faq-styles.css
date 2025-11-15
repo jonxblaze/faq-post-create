@@ -101,31 +101,6 @@
 }
 
 /* FAQ single post styles */
-.faq-submission-section {
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    border: 1px solid #eee;
-    border-radius: 4px;
-}
-
-.faq-submitter-info {
-    background-color: #f9f9f9;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 4px;
-}
-
-.faq-original-question {
-    margin-top: 1rem;
-}
-
-.faq-original-question .question-content {
-    background-color: #f0f8ff;
-    padding: 1rem;
-    border-left: 3px solid #2196F3;
-    border-radius: 0 4px 4px 0;
-}
-
 .faq-response-section {
     background-color: #f9f9f9;
     padding: 1.5rem;
@@ -157,4 +132,103 @@
     color: #666;
     margin: 0.5rem 0 1rem 0;
     font-size: 0.9em;
+}
+
+/* FAQ all listings styles - outside the form */
+.faq-all-listings {
+    margin-top: 3rem;
+    padding: 1.5rem;
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 5px;
+}
+
+.faq-all-listings h3 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.5rem;
+}
+
+.entry-content .faq-list-ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.entry-content .faq-list-ul li {
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px dashed #eee;
+}
+
+.entry-content .faq-list-ul li:last-child {
+    border-bottom: none;
+}
+
+.entry-content .faq-list-ul a {
+    text-decoration: none;
+    color: #0073aa;
+    display: block;
+    padding: 0.5rem;
+    transition: background-color 0.3s;
+}
+
+.entry-content .faq-list-ul a:hover {
+    background-color: #e9e9e9;
+    border-radius: 3px;
+}
+
+/* FAQ pagination styles */
+.faq-pagination {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.faq-pagination-list {
+    list-style: none;
+    padding: 0;
+    display: inline-block;
+    margin: 0;
+}
+
+.faq-pagination-list li {
+    display: inline-block;
+    margin: 0 2px;
+}
+
+.faq-pagination-list a,
+.faq-pagination-list span {
+    display: inline-block;
+    padding: 8px 12px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    color: #0073aa;
+}
+
+.faq-pagination-list a:hover {
+    background-color: #f0f0f0;
+}
+
+.faq-pagination-list .current-page {
+    background-color: #0073aa;
+    color: white;
+    border-color: #0073aa;
+}
+
+.faq-pagination-list .pagination-ellipsis {
+    border: none;
+    padding: 8px 4px;
+}
+
+.faq-loading {
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+    color: #666;
+}
+
+.faq-template-default .entry-header .entry-title {
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.4;
 }

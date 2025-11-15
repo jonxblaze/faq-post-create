@@ -23,6 +23,8 @@ class FAQ_Form_Handler {
         add_action('init', array(__CLASS__, 'handle_form_submission'));
         add_action('wp_ajax_faq_submit_question', array(__CLASS__, 'ajax_submit_question'));
         add_action('wp_ajax_nopriv_faq_submit_question', array(__CLASS__, 'ajax_submit_question'));
+        add_action('wp_ajax_load_faq_page', array(__CLASS__, 'ajax_load_faq_page'));
+        add_action('wp_ajax_nopriv_load_faq_page', array(__CLASS__, 'ajax_load_faq_page'));
     }
     
     /**
@@ -37,12 +39,8 @@ class FAQ_Form_Handler {
     /**
      * Validate FAQ submission form data
      */
-    private static function validate_faq_submission($title, $question, $full_name, $email) {
+    private static function validate_faq_submission($question, $full_name, $email) {
         $errors = array();
-        
-        if (empty($title)) {
-            $errors[] = __('Title is required.', 'faq-post-create');
-        }
 
         if (empty($question)) {
             $errors[] = __('Question is required.', 'faq-post-create');
@@ -57,7 +55,7 @@ class FAQ_Form_Handler {
         } elseif (!is_email($email)) {
             $errors[] = __('Please enter a valid email address.', 'faq-post-create');
         }
-        
+
         return $errors;
     }
     
@@ -81,7 +79,6 @@ class FAQ_Form_Handler {
         }
 
         // Sanitize input
-        $title = sanitize_text_field($_POST['faq_title']);
         $question = sanitize_textarea_field($_POST['faq_question']);
         $full_name = sanitize_text_field($_POST['faq_full_name']);
         $email = sanitize_email($_POST['faq_email']);
@@ -92,13 +89,16 @@ class FAQ_Form_Handler {
             wp_send_json_error(array('message' => __('Submission rejected. Please try again without filling the company field.', 'faq-post-create')));
             return;
         }
-        
+
         // Validate form data using shared validation method
-        $errors = self::validate_faq_submission($title, $question, $full_name, $email);
-        
+        $errors = self::validate_faq_submission($question, $full_name, $email);
+
         if (!empty($errors)) {
             wp_send_json_error(array('message' => $errors[0])); // Return first error
         } else {
+            // Use question as the post title
+            $title = $question;
+
             // Create the FAQ post as draft - content is managed via custom meta field
             $post_id = wp_insert_post(array(
                 'post_title' => $title,
@@ -141,7 +141,6 @@ class FAQ_Form_Handler {
                 return;
             }
 
-            $title = sanitize_text_field($_POST['faq_title']);
             $question = sanitize_textarea_field($_POST['faq_question']);
             $full_name = sanitize_text_field($_POST['faq_full_name']);
             $email = sanitize_email($_POST['faq_email']);
@@ -154,12 +153,15 @@ class FAQ_Form_Handler {
             }
 
             // Validate form data using shared validation method
-            $errors = self::validate_faq_submission($title, $question, $full_name, $email);
-            
+            $errors = self::validate_faq_submission($question, $full_name, $email);
+
             if (!empty($errors)) {
                 // Set error message in session or redirect with error
                 $_SESSION['faq_error'] = $errors[0]; // Use first error
             } else {
+                // Use question as the post title
+                $title = $question;
+
                 // Create the FAQ post as draft - content is managed via custom meta field
                 $post_id = wp_insert_post(array(
                     'post_title' => $title,
@@ -183,5 +185,36 @@ class FAQ_Form_Handler {
                 }
             }
         }
+    }
+
+    /**
+     * AJAX handler for loading FAQ pagination
+     */
+    public static function ajax_load_faq_page() {
+        // Verify nonce
+        if (!wp_verify_nonce($_POST['nonce'], 'faq_nonce')) {
+            wp_send_json_error(array('message' => __('Security check failed', 'faq-post-create')));
+            return;
+        }
+
+        $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
+        $posts_per_page = isset($_POST['posts_per_page']) ? intval($_POST['posts_per_page']) : 25;
+
+        // Sanitize inputs
+        $page = max(1, $page);
+        $posts_per_page = max(1, min(100, $posts_per_page)); // Limit posts per page to reasonable range
+
+        // Include the template handler to access the method
+        if (!class_exists('FAQ_Template_Handler')) {
+            require_once plugin_dir_path(__FILE__) . 'class-faq-template-handler.php';
+        }
+
+        $faq_html = FAQ_Template_Handler::get_paginated_faq_list($posts_per_page, $page);
+
+        wp_send_json_success(array(
+            'html' => $faq_html,
+            'page' => $page,
+            'posts_per_page' => $posts_per_page
+        ));
     }
 }

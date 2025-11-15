@@ -59,18 +59,14 @@ class FAQ_Admin {
         echo '</table>';
         
         // Also display the original submission details
-        $full_name = get_post_meta($post->ID, '_faq_full_name', true);
         $original_question = $post->post_excerpt ? $post->post_excerpt : get_post_meta($post->ID, '_faq_original_question', true);
         
         echo '<div style="background-color:#f0f0f0; padding:15px; margin-top:15px; border-radius:4px;">';
         echo '<h4>' . __('Original Submission Details', 'faq-post-create') . '</h4>';
-        if ($full_name) {
-            echo '<p><strong>' . __('Name:', 'faq-post-create') . '</strong> ' . esc_html($full_name) . '</p>';
-        }
         echo '<p><strong>' . __('Date:', 'faq-post-create') . '</strong> ' . get_the_date() . '</p>';
         if ($original_question) {
             echo '<p><strong>' . __('Question Title:', 'faq-post-create') . '</strong> ' . esc_html($post->post_title) . '</p>';
-            echo '<p><strong>' . __('Question:', 'faq-post-create') . '</strong> ' . wp_kses_post($original_question) . '</p>';
+            //echo '<p><strong>' . __('Question:', 'faq-post-create') . '</strong> ' . wp_kses_post($original_question) . '</p>';
         }
         echo '</div>';
     }

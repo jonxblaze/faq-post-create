@@ -15,15 +15,16 @@ Allows non-logged-in users to submit questions that become draft FAQ posts for a
 The FAQ Post Creator plugin enables visitors to your site to submit questions through a front-end form. These questions are converted into draft FAQ posts that administrators can review and answer before publishing.
 
 ### Features:
-* Front-end form for question submission (Full Name, Email, Title, Question)
+* Front-end form for question submission (Full Name, Email, Question)
 * Custom post type for FAQs with special single post template
 * Draft posts for admin review
 * Honeypot field for bot detection
 * AJAX form submission
 * Admin meta box for separate response entry
-* Separate display of original question and admin response
+* Response display on public FAQ page
 * Publication date display
 * Responsive design
+* CSV import functionality for migrating existing FAQs
 
 ## Installation
 
@@ -51,11 +52,24 @@ Admins can respond to questions using the "Admin Response" meta box when editing
 
 ### How is the FAQ page structured?
 
-The single FAQ template displays the FAQ title with publication date, the submitter's name, and then the question content, followed by the admin response (when available) in a clean, separated layout.
+The single FAQ template displays the FAQ title with publication date, followed by the admin response (when available) in a clean, separated layout.
 
 ### Is there protection against spam bots?
 
 Yes, the form includes a honeypot field that helps identify and block automated bot submissions.
+
+### How do I import existing FAQs from a CSV file?
+
+The plugin includes a CSV import feature to migrate existing FAQs. Go to FAQ > Import CSV in your WordPress admin. The CSV file should contain the following columns:
+
+* `created` - Date the FAQ was created (will be used as the post date)
+* `post_title` - The title of the FAQ
+* `post_content` - The answer/response for the FAQ
+* `_faq_email` - (Optional) The email associated with the FAQ
+
+All columns except `_faq_email` are required. The import process will map these fields to the appropriate custom post type fields and meta fields used by the plugin.
+
+After importing FAQs or fixing long slugs, you may need to refresh your permalink structure. Go to Settings > Permalinks in your WordPress admin and click "Save Changes" to ensure all FAQ URLs work correctly.
 
 ## Changelog
 
