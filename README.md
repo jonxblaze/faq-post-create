@@ -4,7 +4,7 @@
 **Tags:** faq, questions, submissions, custom post type, contact form  
 **Requires at least:** 5.0  
 **Tested up to:** 6.4  
-**Stable tag:** 1.0  
+**Stable tag:** 1.0.2
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -58,6 +58,10 @@ The single FAQ template displays the FAQ title with publication date, the submit
 Yes, the form includes a honeypot field that helps identify and block automated bot submissions.
 
 ## Changelog
+
+### 1.0.2
+* Fixed custom post type registration issue.
+* Implemented dynamic plugin version retrieval from the main plugin file header.
 
 ### 1.0.1
 * Added publication date display under the main FAQ title
