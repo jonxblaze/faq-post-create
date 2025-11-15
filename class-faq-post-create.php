@@ -39,6 +39,7 @@ class FAQ_Post_Create {
         require_once plugin_dir_path(__FILE__) . 'includes/class-faq-form-handler.php';
         require_once plugin_dir_path(__FILE__) . 'includes/class-faq-template-handler.php';
         require_once plugin_dir_path(__FILE__) . 'includes/class-faq-admin.php';
+        require_once plugin_dir_path(__FILE__) . 'includes/class-faq-settings.php';
         require_once plugin_dir_path(__FILE__) . 'import-csv.php';
     }
     
@@ -57,7 +58,10 @@ class FAQ_Post_Create {
         
         // Initialize admin functionality
         add_action('init', array('FAQ_Admin', 'init'));
-        
+
+        // Initialize settings functionality
+        add_action('init', array('FAQ_Settings', 'init'));
+
         // Enqueue scripts and styles
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
@@ -107,11 +111,37 @@ class FAQ_Post_Create {
             $this->version
         );
 
+        // Enqueue Font Awesome CDN
+        wp_enqueue_style(
+            'font-awesome',
+            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css',
+            array(),
+            '6.5.2'
+        );
+
         // Localize script for AJAX
         wp_localize_script('faq-submission-script', 'faq_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('faq_nonce')
         ));
+
+        // Check if reCAPTCHA is enabled and load the API if needed
+        if (class_exists('FAQ_Settings')) {
+            $settings = FAQ_Settings::get_settings();
+            $recaptcha_enabled = !empty($settings['recaptcha_enabled']);
+            $recaptcha_site_key = $settings['recaptcha_site_key'];
+
+            if ($recaptcha_enabled && !empty($recaptcha_site_key)) {
+                // Load reCAPTCHA API for auto-rendering
+                wp_enqueue_script(
+                    'google-recaptcha',
+                    'https://www.google.com/recaptcha/api.js',
+                    array(),
+                    null,
+                    false // Load in header for proper initialization
+                );
+            }
+        }
     }
     
     /**

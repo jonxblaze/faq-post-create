@@ -24,6 +24,13 @@ jQuery(document).ready(function($) {
             return;
         }
 
+        // Check minimum word count (at least 5 words)
+        var wordCount = question.trim().split(/\s+/).length;
+        if (wordCount < 5) {
+            $('#faq-result').html('<div class="faq-message error">Question must contain at least 5 words.</div>');
+            return;
+        }
+
         // Basic email validation
         var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -38,8 +45,21 @@ jQuery(document).ready(function($) {
         }
 
         // Show loading message
-        $('#faq-result').html('<div class="faq-message info">Submitting your question...</div>');
         $('#faq_submit_button').prop('disabled', true);
+
+        // Add a loading spinner to the submit button
+        var originalButtonText = $('#faq_submit_button').val();
+        $('#faq_submit_button').val('Submitting your question...').prop('disabled', true);
+
+        // Get reCAPTCHA response if reCAPTCHA is present
+        var recaptchaResponse = typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse() : '';
+
+        // Validate reCAPTCHA if it's required
+        if ($('.g-recaptcha').length > 0 && recaptchaResponse === '') {
+            $('#faq-result').html('<div class="faq-message error">Please complete the reCAPTCHA verification.</div>');
+            $('#faq_submit_button').val(originalButtonText).prop('disabled', false);
+            return;
+        }
 
         // Send AJAX request
         $.ajax({
@@ -51,22 +71,28 @@ jQuery(document).ready(function($) {
                 faq_full_name: full_name,
                 faq_email: email,
                 faq_company: company, // Include honeypot field (should be empty)
+                'g-recaptcha-response': recaptchaResponse,
                 nonce: faq_ajax.nonce
             },
             success: function(response) {
-                if (response.success) {
-                    $('#faq-result').html('<div class="faq-message success">' + response.data.message + '</div>');
-                    $('#faq-submission')[0].reset(); // Reset form
-                    // Clear the honeypot field again after reset
-                    $('#faq_company').val('');
-                } else {
-                    $('#faq-result').html('<div class="faq-message error">' + response.data.message + '</div>');
-                }
-                $('#faq_submit_button').prop('disabled', false);
+                // Wait at least 3 seconds before showing the success message
+                setTimeout(function() {
+                    if (response.success) {
+                        // Hide the form and show success message
+                        $('#faq-submission').hide();
+                        $('#faq-result').html('<div class="faq-message success">Your question was sent and will be answered shortly, thank you</div>');
+                    } else {
+                        $('#faq-result').html('<div class="faq-message error">' + response.data.message + '</div>');
+                        $('#faq_submit_button').val(originalButtonText).prop('disabled', false);
+                    }
+                }, 2000); // Wait 3 seconds minimum
             },
             error: function() {
-                $('#faq-result').html('<div class="faq-message error">There was an error submitting your question. Please try again.</div>');
-                $('#faq_submit_button').prop('disabled', false);
+                // Wait at least 3 seconds before showing the error message
+                setTimeout(function() {
+                    $('#faq-result').html('<div class="faq-message error">There was an error submitting your question. Please try again.</div>');
+                    $('#faq_submit_button').val(originalButtonText).prop('disabled', false);
+                }, 2000); // Wait 3 seconds minimum
             }
         });
     });

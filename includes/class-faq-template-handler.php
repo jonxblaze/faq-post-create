@@ -70,6 +70,23 @@ class FAQ_Template_Handler {
                     <textarea id="faq_question" name="faq_question" rows="5" required><?php echo isset($_POST['faq_question']) ? esc_textarea($_POST['faq_question']) : ''; ?></textarea>
                 </p>
 
+                <?php
+                // Check if reCAPTCHA is enabled
+                if (class_exists('FAQ_Settings')) {
+                    $settings = FAQ_Settings::get_settings();
+                    $recaptcha_enabled = !empty($settings['recaptcha_enabled']);
+                    $recaptcha_site_key = $settings['recaptcha_site_key'];
+                } else {
+                    $recaptcha_enabled = false;
+                    $recaptcha_site_key = '';
+                }
+
+                if ($recaptcha_enabled && !empty($recaptcha_site_key)): ?>
+                    <div class="faq-form-field">
+                        <div class="g-recaptcha" data-sitekey="<?php echo esc_attr($recaptcha_site_key); ?>"></div>
+                    </div>
+                <?php endif; ?>
+
                 <p class="faq-form-submit">
                     <input type="hidden" name="faq_nonce" value="<?php echo wp_create_nonce('faq_nonce'); ?>" />
                     <input type="hidden" name="faq_submit" value="1" />

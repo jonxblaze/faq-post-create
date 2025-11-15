@@ -39,7 +39,7 @@
 }
 
 .faq-form-submit {
-    text-align: center;
+    text-align: left;
     margin-top: 20px;
 }
 
@@ -53,6 +53,14 @@
     font-size: 16px;
     transition: background-color 0.3s;
 }
+
+.faq-form-submit input[type="submit"]:after{
+  content: "\f1d8";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+}
+
+
 
 .faq-form-submit input[type="submit"]:hover {
     background-color: #005a87;
@@ -159,6 +167,21 @@
     margin-bottom: 0.5rem;
     padding: 0.25rem 0;
     border-bottom: 1px dashed #eee;
+    
+}
+
+.entry-content .faq-list-ul li a{
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start; /* Aligns items to the start of the cross axis (top of the row) */
+  gap: 10px;
+  text-transform: capitalize;
+}
+
+.entry-content .faq-list-ul li a::before{
+  content: "\f059";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
 }
 
 .entry-content .faq-list-ul li:last-child {

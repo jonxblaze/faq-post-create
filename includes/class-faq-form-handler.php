@@ -44,6 +44,12 @@ class FAQ_Form_Handler {
 
         if (empty($question)) {
             $errors[] = __('Question is required.', 'faq-post-create');
+        } else {
+            // Check minimum word count (at least 5 words)
+            $words = preg_split('/\s+/', trim($question), -1, PREG_SPLIT_NO_EMPTY);
+            if (count($words) < 5) {
+                $errors[] = __('Question must contain at least 5 words.', 'faq-post-create');
+            }
         }
 
         if (empty($full_name)) {
@@ -69,10 +75,17 @@ class FAQ_Form_Handler {
             return;
         }
 
+        // Check reCAPTCHA if enabled
+        $recaptcha_response = isset($_POST['g-recaptcha-response']) ? sanitize_text_field($_POST['g-recaptcha-response']) : '';
+        if (!self::validate_recaptcha($recaptcha_response)) {
+            wp_send_json_error(array('message' => __('Please complete the reCAPTCHA verification.', 'faq-post-create')));
+            return;
+        }
+
         // Rate limiting: Check if user submitted within the last 30 seconds
         $last_submission = isset($_SESSION['faq_last_submission']) ? $_SESSION['faq_last_submission'] : 0;
         $time_diff = time() - $last_submission;
-        
+
         if ($time_diff < 30) {
             wp_send_json_error(array('message' => sprintf(__('Please wait %d seconds before submitting another question.', 'faq-post-create'), 30 - $time_diff)));
             return;
@@ -114,7 +127,7 @@ class FAQ_Form_Handler {
                 update_post_meta($post_id, '_faq_full_name', $full_name);
                 update_post_meta($post_id, '_faq_email', $email);
                 update_post_meta($post_id, '_faq_original_question', $question); // Store question in custom field too
-                
+
                 // Set last submission time to prevent rapid submissions
                 $_SESSION['faq_last_submission'] = time();
 
@@ -132,6 +145,13 @@ class FAQ_Form_Handler {
      */
     public static function handle_form_submission() {
         if (isset($_POST['faq_submit']) && wp_verify_nonce($_POST['faq_nonce'], 'faq_nonce')) {
+            // Check reCAPTCHA if enabled
+            $recaptcha_response = isset($_POST['g-recaptcha-response']) ? sanitize_text_field($_POST['g-recaptcha-response']) : '';
+            if (!self::validate_recaptcha($recaptcha_response)) {
+                $_SESSION['faq_error'] = __('Please complete the reCAPTCHA verification.', 'faq-post-create');
+                return;
+            }
+
             // Rate limiting: Check if user submitted within the last 30 seconds
             $last_submission = isset($_SESSION['faq_last_submission']) ? $_SESSION['faq_last_submission'] : 0;
             $time_diff = time() - $last_submission;
@@ -177,7 +197,7 @@ class FAQ_Form_Handler {
                     update_post_meta($post_id, '_faq_full_name', $full_name);
                     update_post_meta($post_id, '_faq_email', $email);
                     update_post_meta($post_id, '_faq_original_question', $question); // Store question in custom field too
-                    
+
                     $_SESSION['faq_success'] = __('Your question has been submitted successfully. It will be reviewed by an administrator.', 'faq-post-create');
                     $_SESSION['faq_last_submission'] = time();
                 } else {
@@ -216,5 +236,72 @@ class FAQ_Form_Handler {
             'page' => $page,
             'posts_per_page' => $posts_per_page
         ));
+    }
+
+    /**
+     * Validate reCAPTCHA response
+     */
+    private static function validate_recaptcha($recaptcha_response) {
+        // Get settings to check if reCAPTCHA is enabled
+        if (!class_exists('FAQ_Settings')) {
+            // Try to include the settings class if needed
+            $settings_path = plugin_dir_path(__FILE__) . 'class-faq-settings.php';
+            if (file_exists($settings_path)) {
+                require_once $settings_path;
+            }
+        }
+
+        if (!class_exists('FAQ_Settings')) {
+            // If settings class is not available, allow submission to proceed
+            return true;
+        }
+
+        $settings = FAQ_Settings::get_settings();
+        if (empty($settings['recaptcha_enabled']) || empty($settings['recaptcha_secret_key'])) {
+            // If reCAPTCHA is not enabled, consider it valid
+            return true;
+        }
+
+        // Log the recaptcha response for debugging (temporarily)
+        // error_log('reCAPTCHA response received: ' . ($recaptcha_response ? substr($recaptcha_response, 0, 20) . '...' : 'EMPTY'));
+
+        if (empty($recaptcha_response)) {
+            // Log that response is empty for debugging
+            // error_log('reCAPTCHA validation failed: empty response');
+            return false;
+        }
+
+        $recaptcha_secret_key = $settings['recaptcha_secret_key'];
+
+        // Make request to Google reCAPTCHA API
+        $response = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', array(
+            'body' => array(
+                'secret' => $recaptcha_secret_key,
+                'response' => $recaptcha_response,
+                'remoteip' => $_SERVER['REMOTE_ADDR']
+            )
+        ));
+
+        if (is_wp_error($response)) {
+            // Log API error for debugging
+            // error_log('reCAPTCHA API error: ' . $response->get_error_message());
+            // If there's an error contacting Google, we'll allow the submission to proceed
+            // to avoid blocking legitimate users due to API issues
+            return true;
+        }
+
+        $body = wp_remote_retrieve_body($response);
+        $json = json_decode($body);
+
+        // Check if the response contains the success property
+        $is_valid = $json && isset($json->success) && $json->success === true;
+
+        // Log validation result for debugging
+        // error_log('reCAPTCHA validation result: ' . ($is_valid ? 'SUCCESS' : 'FAILED'));
+        // if ($json && isset($json->{'error-codes'})) {
+        //     error_log('reCAPTCHA errors: ' . print_r($json->{'error-codes'}, true));
+        // }
+
+        return $is_valid;
     }
 }
