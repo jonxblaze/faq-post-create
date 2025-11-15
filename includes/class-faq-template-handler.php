@@ -27,7 +27,7 @@ class FAQ_Template_Handler {
      */
     public static function display_submission_form($atts) {
         $atts = shortcode_atts(array(
-            'title' => __('Submit a Question', 'faq-post-create'),
+            'title' => __('Submit Your Question', 'faq-post-create'),
             'posts_per_page' => 25,
         ), $atts);
 
@@ -51,22 +51,22 @@ class FAQ_Template_Handler {
 
             <form id="faq-submission" method="post" action="">
                 <p class="faq-form-field">
-                    <label for="faq_full_name"><?php _e('Full Name:', 'faq-post-create'); ?></label><br>
+                    <label for="faq_full_name"><?php _e('Full Name:', 'faq-post-create'); ?></label>
                     <input type="text" id="faq_full_name" name="faq_full_name" value="<?php echo isset($_POST['faq_full_name']) ? esc_attr($_POST['faq_full_name']) : ''; ?>" required />
                 </p>
                 <p class="faq-form-field">
-                    <label for="faq_email"><?php _e('Email Address:', 'faq-post-create'); ?></label><br>
+                    <label for="faq_email"><?php _e('Email Address:', 'faq-post-create'); ?></label>
                     <input type="email" id="faq_email" name="faq_email" value="<?php echo isset($_POST['faq_email']) ? esc_attr($_POST['faq_email']) : ''; ?>" required />
                 </p>
 
                 <!-- Honeypot field for bot detection - should remain empty -->
                 <p class="faq-form-field honeypot">
-                    <label for="faq_company"><?php _e('Company:', 'faq-post-create'); ?></label><br>
+                    <label for="faq_company"><?php _e('Company:', 'faq-post-create'); ?></label>
                     <input type="text" id="faq_company" name="faq_company" value="" autocomplete="off" />
                 </p>
 
                 <p class="faq-form-field">
-                    <label for="faq_question"><?php _e('Question:', 'faq-post-create'); ?></label><br>
+                    <label for="faq_question"><?php _e('Question:', 'faq-post-create'); ?></label>
                     <textarea id="faq_question" name="faq_question" rows="5" required><?php echo isset($_POST['faq_question']) ? esc_textarea($_POST['faq_question']) : ''; ?></textarea>
                 </p>
 
@@ -98,7 +98,7 @@ class FAQ_Template_Handler {
         </div>
 
         <!-- Display all FAQ links with truncated titles outside the form -->
-        <div class="faq-all-listings">
+        <div id="faqs" class="faq-all-listings">
             <h3><?php _e('All FAQs', 'faq-post-create'); ?></h3>
             <div id="faq-list-container">
                 <?php echo self::get_paginated_faq_list($atts['posts_per_page'], 1); ?>
@@ -136,10 +136,10 @@ class FAQ_Template_Handler {
         $output = '<ul class="faq-list-ul">';
         foreach ($faqs as $faq) {
             $title = $faq->post_title;
-            $truncated_title = self::truncate_title($title, 30);
+            $truncated_title = self::truncate_title($title, 22);
             $faq_url = get_permalink($faq->ID);
 
-            $output .= '<li><a href="' . esc_url($faq_url) . '">' . esc_html($truncated_title) . '</a></li>';
+            $output .= '<li><a href="' . esc_url($faq_url) . '" title="'. $title .'">' . esc_html($truncated_title) . '</a></li>';
         }
         $output .= '</ul>';
 

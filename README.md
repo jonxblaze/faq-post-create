@@ -73,6 +73,28 @@ After importing FAQs or fixing long slugs, you may need to refresh your permalin
 
 ## Changelog
 
+### 1.0.3
+* Added Google reCAPTCHA integration with settings page
+* Implemented minimum 5-word requirement for questions
+* Added loader with 3-second minimum display during form submission
+* Left-aligned submit button
+* Added Font Awesome CDN integration
+* Added settings page for reCAPTCHA configuration
+* Improved form validation and user feedback
+* Added success message that replaces form after submission
+* Enhanced security with comprehensive input sanitization
+* Added smooth scrolling to FAQ list on pagination
+* Updated FAQ list to order by post date (newest first)
+* Increased FAQ title display to 30 words in list
+* Moved FAQ list outside form container with separate styling
+* Added proper line break preservation in admin responses
+* Added AJAX pagination for FAQ list with 25 items per page
+* Added FAQ slug limiting to 10 words maximum
+* Added CSV import functionality for existing FAQs
+* Removed original submission display from single FAQ view
+* Removed title field from submission form - now uses question as title
+* Added FAQ list display to submission form shortcode
+
 ### 1.0.2
 * Fixed custom post type registration issue.
 * Implemented dynamic plugin version retrieval from the main plugin file header.

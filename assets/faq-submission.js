@@ -80,7 +80,7 @@ jQuery(document).ready(function($) {
                     if (response.success) {
                         // Hide the form and show success message
                         $('#faq-submission').hide();
-                        $('#faq-result').html('<div class="faq-message success">Your question was sent and will be answered shortly, thank you</div>');
+                        $('#faq-result').html('<div class="faq-message success">Your question was sent and will be answered shortly, thank you.</div>');
                     } else {
                         $('#faq-result').html('<div class="faq-message error">' + response.data.message + '</div>');
                         $('#faq_submit_button').val(originalButtonText).prop('disabled', false);
