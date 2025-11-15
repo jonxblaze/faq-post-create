@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FAQ Post Creator
  * Description: Allows non-logged-in users to submit questions that become draft FAQ posts for admin approval.
- * Version: 1.0
+ * Version: 1.0.1
  * Author: Jon Blaze
  * Author URI: https://jbwebdev.com
  * Plugin URI:
@@ -124,7 +124,6 @@ class FAQPostCreator {
         
         // Also display the original submission details
         $full_name = get_post_meta($post->ID, '_faq_full_name', true);
-        $email = get_post_meta($post->ID, '_faq_email', true);
         $original_question = $post->post_excerpt ? $post->post_excerpt : get_post_meta($post->ID, '_faq_original_question', true);
         
         echo '<div style="background-color:#f0f0f0; padding:15px; margin-top:15px; border-radius:4px;">';
@@ -132,7 +131,9 @@ class FAQPostCreator {
         if ($full_name) {
             echo '<p><strong>' . __('Name:', 'faq-post-create') . '</strong> ' . esc_html($full_name) . '</p>';
         }
+        echo '<p><strong>' . __('Date:', 'faq-post-create') . '</strong> ' . get_the_date() . '</p>';
         if ($original_question) {
+            echo '<p><strong>' . __('Question Title:', 'faq-post-create') . '</strong> ' . esc_html($post->post_title) . '</p>';
             echo '<p><strong>' . __('Question:', 'faq-post-create') . '</strong> ' . wp_kses_post($original_question) . '</p>';
         }
         echo '</div>';
@@ -217,6 +218,7 @@ class FAQPostCreator {
                     <article id="post-<?php echo $post->ID; ?>" <?php post_class(); ?>>
                         <header class="entry-header">
                             <h1 class="entry-title"><?php echo esc_html($post->post_title); ?></h1>
+                            <p class="faq-date"><?php echo get_the_date(); ?></p>
                         </header>
                         
                         <div class="entry-content">
@@ -231,7 +233,6 @@ class FAQPostCreator {
                                 </div>
                                 
                                 <div class="faq-original-question">
-                                    <h3><?php echo esc_html($post->post_title); ?></h3>
                                     <div class="question-content">
                                         <?php echo wp_kses_post($post->post_excerpt); ?>
                                     </div>
@@ -313,6 +314,13 @@ class FAQPostCreator {
                     font-style: italic;
                     color: #666;
                 }
+                
+                .faq-date {
+                    font-style: italic;
+                    color: #666;
+                    margin: 0.5rem 0 1rem 0;
+                    font-size: 0.9em;
+                }
             </style>
             
             <?php
@@ -352,6 +360,7 @@ class FAQPostCreator {
                     <article id="post-<?php echo $post->ID; ?>" <?php post_class(); ?>>
                         <header class="entry-header">
                             <h1 class="entry-title"><?php echo esc_html($post->post_title); ?></h1>
+                            <p class="faq-date"><?php echo get_the_date(); ?></p>
                         </header>
                         
                         <div class="entry-content">
@@ -370,7 +379,6 @@ class FAQPostCreator {
                                 </div>
                                 
                                 <div class="faq-original-question">
-                                    <h3>Question:</h3>
                                     <div class="question-content">
                                         <?php echo wp_kses_post($original_question); ?>
                                     </div>
@@ -456,6 +464,13 @@ class FAQPostCreator {
                 .no-response-yet {
                     font-style: italic;
                     color: #666;
+                }
+                
+                .faq-date {
+                    font-style: italic;
+                    color: #666;
+                    margin: 0.5rem 0 1rem 0;
+                    font-size: 0.9em;
                 }
             </style>
             

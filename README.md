@@ -22,6 +22,7 @@ The FAQ Post Creator plugin enables visitors to your site to submit questions th
 * AJAX form submission
 * Admin meta box for separate response entry
 * Separate display of original question and admin response
+* Publication date display
 * Responsive design
 
 ## Installation
@@ -50,13 +51,21 @@ Admins can respond to questions using the "Admin Response" meta box when editing
 
 ### How is the FAQ page structured?
 
-The single FAQ template displays the submitter's name, the question title, the question content, and then the admin response (when available) in a clean, separated layout.
+The single FAQ template displays the FAQ title with publication date, the submitter's name, and then the question content, followed by the admin response (when available) in a clean, separated layout.
 
 ### Is there protection against spam bots?
 
 Yes, the form includes a honeypot field that helps identify and block automated bot submissions.
 
 ## Changelog
+
+### 1.0.1
+* Added publication date display under the main FAQ title
+* Improved template structure by removing redundant headings
+* Hide user email address - only display full name
+* Changed response header from H2 to H3
+* Added date display in admin meta box
+* Updated FAQ page structure for better layout
 
 ### 1.0
 * Initial release
