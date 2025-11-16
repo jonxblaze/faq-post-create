@@ -75,20 +75,18 @@ class FAQ_Settings {
 
         add_settings_field(
             'recaptcha_site_key',
-            __('reCAPTCHA Site Key', 'faq-post-create'),
+            __('', 'faq-post-create'),
             array(__CLASS__, 'recaptcha_site_key_callback'),
             self::SETTINGS_PAGE,
-            'faq_recaptcha_section',
-            array('label_for' => 'recaptcha_site_key')
+            'faq_recaptcha_section'
         );
 
         add_settings_field(
             'recaptcha_secret_key',
-            __('reCAPTCHA Secret Key', 'faq-post-create'),
+            __('', 'faq-post-create'),
             array(__CLASS__, 'recaptcha_secret_key_callback'),
             self::SETTINGS_PAGE,
-            'faq_recaptcha_section',
-            array('label_for' => 'recaptcha_secret_key')
+            'faq_recaptcha_section'
         );
     }
 
@@ -144,10 +142,10 @@ class FAQ_Settings {
                         $('.recaptcha-field-row').hide();
                     }
                 }
-                
+
                 // Initial state
                 toggleRecaptchaFields();
-                
+
                 // Toggle on checkbox change
                 $('#recaptcha_enabled').on('change', function() {
                     toggleRecaptchaFields();
@@ -165,7 +163,13 @@ class FAQ_Settings {
         $site_key = isset($settings['recaptcha_site_key']) ? $settings['recaptcha_site_key'] : '';
         $row_class = 'recaptcha-field-row';
         ?>
+        <style>
+            .recaptcha-field-row input{
+                width: 24rem;
+            }
+        </style>
         <tr class="<?php echo $row_class; ?>">
+            <th scope="row"><?php _e('reCAPTCHA Site Key', 'faq-post-create'); ?></th>
             <td>
                 <input type="text" name="<?php echo self::OPTION_NAME; ?>[recaptcha_site_key]" id="recaptcha_site_key" value="<?php echo esc_attr($site_key); ?>" class="regular-text" />
                 <p class="description"><?php _e('Enter your Google reCAPTCHA v2 site key.', 'faq-post-create'); ?></p>
@@ -183,6 +187,7 @@ class FAQ_Settings {
         $row_class = 'recaptcha-field-row';
         ?>
         <tr class="<?php echo $row_class; ?>">
+            <th scope="row"><?php _e('reCAPTCHA Secret Key', 'faq-post-create'); ?></th>
             <td>
                 <input type="password" name="<?php echo self::OPTION_NAME; ?>[recaptcha_secret_key]" id="recaptcha_secret_key" value="<?php echo esc_attr($secret_key); ?>" class="regular-text" />
                 <p class="description"><?php _e('Enter your Google reCAPTCHA v2 secret key.', 'faq-post-create'); ?></p>
