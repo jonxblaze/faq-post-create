@@ -128,6 +128,9 @@ class FAQ_Form_Handler {
                 update_post_meta($post_id, '_faq_email', $email);
                 update_post_meta($post_id, '_faq_original_question', $question); // Store question in custom field too
 
+                // Send notification email to admin
+                self::send_admin_notification_email($post_id, $title, $full_name, $email);
+
                 // Set last submission time to prevent rapid submissions
                 $_SESSION['faq_last_submission'] = time();
 
@@ -197,6 +200,9 @@ class FAQ_Form_Handler {
                     update_post_meta($post_id, '_faq_full_name', $full_name);
                     update_post_meta($post_id, '_faq_email', $email);
                     update_post_meta($post_id, '_faq_original_question', $question); // Store question in custom field too
+
+                    // Send notification email to admin
+                    self::send_admin_notification_email($post_id, $title, $full_name, $email);
 
                     $_SESSION['faq_success'] = __('Your question has been submitted successfully. It will be reviewed by an administrator.', 'faq-post-create');
                     $_SESSION['faq_last_submission'] = time();
@@ -303,5 +309,68 @@ class FAQ_Form_Handler {
         // }
 
         return $is_valid;
+    }
+
+    /**
+     * Send notification email to admin when a new FAQ is submitted
+     */
+    private static function send_admin_notification_email($post_id, $question_title, $submitter_name, $submitter_email) {
+        // Get admin email address
+        $admin_email = get_option('admin_email');
+
+        // Get site name
+        $site_name = get_bloginfo('name');
+
+        // Set up email subject
+        $subject = sprintf('[%s] New Question Submitted: ', $site_name) . wp_trim_words($question_title, 10, '...');
+
+        // Set up HTML email message
+        $message = sprintf(
+            "<html><body>" .
+            "<p>Hello,</p>" .
+            "<p>A new FAQ question has been submitted on <strong>%s</strong> and requires your attention:</p>" .
+            "<table border='0'>" .
+            "<tr><td><strong>Question:</strong> %s</td></tr>" . 
+            "<tr><td><strong>Submitted by:</strong> %s</td></tr>" .
+            "<tr><td><strong>Submitter's email:</strong> %s</td></tr>" .
+            "<tr><td><strong>Submission date:</strong> %s</td></tr>" .
+            "</table>" .
+            "<p>Please review and respond to this question when possible.</p>" .
+            "<p><a href=\"%s\" style=\"display: inline-block; padding: 10px 15px; background-color: #0073aa; color: white; text-decoration: none; border-radius: 4px;\">Manage FAQ Post</a></p>" .
+            "<p>Best regards,<br />%s</p>" .
+            "</body></html>",
+            esc_html($site_name),
+            esc_html($question_title),
+            esc_html($submitter_name),
+            esc_html($submitter_email),
+            date('F j, Y g:i A'),
+            esc_url(admin_url('post.php?post=' . $post_id . '&action=edit')),
+            esc_html($site_name)
+        );
+
+        // Set content type to HTML
+        add_filter('wp_mail_content_type', function() { return 'text/html'; });
+
+        // Get the site domain for proper "From" address
+        $site_domain = parse_url(home_url(), PHP_URL_HOST);
+        $from_email = 'wordpress@' . $site_domain;
+
+        // Also add headers for proper email delivery
+        $headers = array(
+            'Content-Type: text/html; charset=UTF-8',
+            'From: ' . $site_name . ' <' . $from_email . '>'
+        );
+
+        // Send the email
+        $sent = wp_mail($admin_email, $subject, $message, $headers);
+
+        // For debugging, you can temporarily enable this to log the result:
+        // error_log('FAQ notification email result: ' . ($sent ? 'SUCCESS' : 'FAILED'));
+        // error_log('To: ' . $admin_email . ' | Subject: ' . $subject);
+
+        // Reset content type to avoid conflicts
+        remove_filter('wp_mail_content_type', function() { return 'text/html'; });
+
+        return $sent;
     }
 }

@@ -73,6 +73,11 @@ After importing FAQs or fixing long slugs, you may need to refresh your permalin
 
 ## Changelog
 
+### 1.0.4
+* Added email notifications to admin when new FAQs are submitted
+* Improved email formatting with HTML support for WP Mail SMTP compatibility
+* Enhanced email delivery with proper headers and from address
+
 ### 1.0.3
 * Added Google reCAPTCHA integration with settings page
 * Implemented minimum 5-word requirement for questions

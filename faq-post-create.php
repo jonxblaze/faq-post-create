@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FAQ Post Creator
  * Description: Allows non-logged-in users to submit questions that become draft FAQ posts for admin approval.
- * Version: 1.0.3
+ * Version: 1.0.4
  * Author: Jon Blaze
  * Author URI: https://jbwebdev.com
  * Plugin URI:
