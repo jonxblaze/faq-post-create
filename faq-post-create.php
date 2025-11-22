@@ -29,3 +29,13 @@ register_deactivation_hook(__FILE__, 'flush_rewrite_rules');
 
 // Initialize the plugin
 new FAQ_Post_Create();
+
+// Add settings link to plugin page
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'faq_add_settings_link');
+
+// Settings link function
+function faq_add_settings_link($links) {
+    $settings_link = '<a href="' . admin_url('admin.php?page=faq-settings') . '">Settings</a>';
+    array_unshift($links, $settings_link);
+    return $links;
+}

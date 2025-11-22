@@ -21,7 +21,7 @@ class FAQ_Admin {
     public static function init() {
         add_action('add_meta_boxes', array(__CLASS__, 'add_faq_response_meta_box'));
         add_action('save_post', array(__CLASS__, 'save_faq_response_meta_box'));
-        add_shortcode('faq_submission_form', array('FAQ_Template_Handler', 'display_submission_form'));
+        add_shortcode('FAQ_FORM', array('FAQ_Template_Handler', 'display_submission_form'));
     }
     
     /**

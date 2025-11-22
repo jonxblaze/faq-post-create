@@ -504,11 +504,11 @@ function faq_csv_import_admin_page() {
 }
 
 /**
- * Add CSV import submenu to FAQ admin menu
+ * Add CSV import submenu to FAQ Settings menu
  */
 function add_faq_csv_import_menu() {
     add_submenu_page(
-        'edit.php?post_type=faq',
+        'faq-settings',
         'Import FAQs',
         'Import CSV',
         'manage_options',
@@ -516,5 +516,4 @@ function add_faq_csv_import_menu() {
         'faq_csv_import_admin_page'
     );
 }
-add_action('admin_menu', 'add_faq_csv_import_menu');
-
+add_action('admin_menu', 'add_faq_csv_import_menu', 10); // Lower priority to run after parent menu is created

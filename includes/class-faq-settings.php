@@ -34,20 +34,22 @@ class FAQ_Settings {
      * Initialize hooks
      */
     public static function init() {
-        add_action('admin_menu', array(__CLASS__, 'add_settings_page'));
+        add_action('admin_menu', array(__CLASS__, 'add_settings_page'), 9); // Higher priority to create menu first
         add_action('admin_init', array(__CLASS__, 'init_settings'));
     }
 
     /**
-     * Add settings page to admin menu
+     * Add settings page to admin menu as top-level menu
      */
     public static function add_settings_page() {
-        add_options_page(
+        add_menu_page(
             'FAQ Settings',
             'FAQ Settings',
             'manage_options',
             self::SETTINGS_PAGE,
-            array(__CLASS__, 'settings_page_html')
+            array(__CLASS__, 'settings_page_html'),
+            'dashicons-admin-settings',
+            25
         );
     }
 
