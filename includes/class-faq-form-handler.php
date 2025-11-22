@@ -43,23 +43,23 @@ class FAQ_Form_Handler {
         $errors = array();
 
         if (empty($question)) {
-            $errors[] = __('Question is required.', 'faq-post-create');
+            $errors[] = 'Question is required.';
         } else {
             // Check minimum word count (at least 5 words)
             $words = preg_split('/\s+/', trim($question), -1, PREG_SPLIT_NO_EMPTY);
             if (count($words) < 5) {
-                $errors[] = __('Question must contain at least 5 words.', 'faq-post-create');
+                $errors[] = 'Question must contain at least 5 words.';
             }
         }
 
         if (empty($full_name)) {
-            $errors[] = __('Full Name is required.', 'faq-post-create');
+            $errors[] = 'Full Name is required.';
         }
 
         if (empty($email)) {
-            $errors[] = __('Email is required.', 'faq-post-create');
+            $errors[] = 'Email is required.';
         } elseif (!is_email($email)) {
-            $errors[] = __('Please enter a valid email address.', 'faq-post-create');
+            $errors[] = 'Please enter a valid email address.';
         }
 
         return $errors;
@@ -71,14 +71,14 @@ class FAQ_Form_Handler {
     public static function ajax_submit_question() {
         // Verify nonce
         if (!wp_verify_nonce($_POST['nonce'], 'faq_nonce')) {
-            wp_send_json_error(array('message' => __('Security check failed', 'faq-post-create')));
+            wp_send_json_error(array('message' => 'Security check failed'));
             return;
         }
 
         // Check reCAPTCHA if enabled
         $recaptcha_response = isset($_POST['g-recaptcha-response']) ? sanitize_text_field($_POST['g-recaptcha-response']) : '';
         if (!self::validate_recaptcha($recaptcha_response)) {
-            wp_send_json_error(array('message' => __('Please complete the reCAPTCHA verification.', 'faq-post-create')));
+            wp_send_json_error(array('message' => 'Please complete the reCAPTCHA verification.'));
             return;
         }
 
@@ -87,7 +87,7 @@ class FAQ_Form_Handler {
         $time_diff = time() - $last_submission;
 
         if ($time_diff < 30) {
-            wp_send_json_error(array('message' => sprintf(__('Please wait %d seconds before submitting another question.', 'faq-post-create'), 30 - $time_diff)));
+            wp_send_json_error(array('message' => sprintf('Please wait %d seconds before submitting another question.', 30 - $time_diff)));
             return;
         }
 
@@ -99,7 +99,7 @@ class FAQ_Form_Handler {
 
         // Bot detection: If the honeypot field has a value, it's likely a bot
         if (!empty($company)) {
-            wp_send_json_error(array('message' => __('Submission rejected. Please try again without filling the company field.', 'faq-post-create')));
+            wp_send_json_error(array('message' => 'Submission rejected. Please try again without filling the company field.'));
             return;
         }
 
@@ -135,10 +135,10 @@ class FAQ_Form_Handler {
                 $_SESSION['faq_last_submission'] = time();
 
                 wp_send_json_success(array(
-                    'message' => __('Your question has been submitted successfully. It will be reviewed by an administrator.', 'faq-post-create')
+                    'message' => 'Your question has been submitted successfully. It will be reviewed by an administrator.'
                 ));
             } else {
-                wp_send_json_error(array('message' => __('There was an error submitting your question. Please try again.', 'faq-post-create')));
+                wp_send_json_error(array('message' => 'There was an error submitting your question. Please try again.'));
             }
         }
     }
@@ -151,7 +151,7 @@ class FAQ_Form_Handler {
             // Check reCAPTCHA if enabled
             $recaptcha_response = isset($_POST['g-recaptcha-response']) ? sanitize_text_field($_POST['g-recaptcha-response']) : '';
             if (!self::validate_recaptcha($recaptcha_response)) {
-                $_SESSION['faq_error'] = __('Please complete the reCAPTCHA verification.', 'faq-post-create');
+                $_SESSION['faq_error'] = 'Please complete the reCAPTCHA verification.';
                 return;
             }
 
@@ -160,7 +160,7 @@ class FAQ_Form_Handler {
             $time_diff = time() - $last_submission;
 
             if ($time_diff < 30) {
-                $_SESSION['faq_error'] = sprintf(__('Please wait %d seconds before submitting another question.', 'faq-post-create'), 30 - $time_diff);
+                $_SESSION['faq_error'] = sprintf('Please wait %d seconds before submitting another question.', 30 - $time_diff);
                 return;
             }
 
@@ -171,7 +171,7 @@ class FAQ_Form_Handler {
 
             // Bot detection: If the honeypot field has a value, it's likely a bot
             if (!empty($company)) {
-                $_SESSION['faq_error'] = __('Submission rejected. Please try again without filling the company field.', 'faq-post-create');
+                $_SESSION['faq_error'] = 'Submission rejected. Please try again without filling the company field.';
                 return;
             }
 
@@ -204,10 +204,10 @@ class FAQ_Form_Handler {
                     // Send notification email to admin
                     self::send_admin_notification_email($post_id, $title, $full_name, $email);
 
-                    $_SESSION['faq_success'] = __('Your question has been submitted successfully. It will be reviewed by an administrator.', 'faq-post-create');
+                    $_SESSION['faq_success'] = 'Your question has been submitted successfully. It will be reviewed by an administrator.';
                     $_SESSION['faq_last_submission'] = time();
                 } else {
-                    $_SESSION['faq_error'] = __('There was an error submitting your question. Please try again.', 'faq-post-create');
+                    $_SESSION['faq_error'] = 'There was an error submitting your question. Please try again.';
                 }
             }
         }
@@ -219,7 +219,7 @@ class FAQ_Form_Handler {
     public static function ajax_load_faq_page() {
         // Verify nonce
         if (!wp_verify_nonce($_POST['nonce'], 'faq_nonce')) {
-            wp_send_json_error(array('message' => __('Security check failed', 'faq-post-create')));
+            wp_send_json_error(array('message' => 'Security check failed'));
             return;
         }
 

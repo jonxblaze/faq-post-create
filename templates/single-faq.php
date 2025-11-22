@@ -27,7 +27,7 @@ get_header(); ?>
             <div class="entry-content">
                 <!-- Admin response section with light background -->
                 <div class="faq-response-section">
-                    <h3><?php _e('Response', 'faq-post-create'); ?></h3>
+                    <h3>Response</h3>
                     <?php
                     // Use a custom meta field for admin response to ensure separation
                     $admin_response = get_post_meta(get_the_ID(), '_faq_admin_response', true);
@@ -68,7 +68,7 @@ get_header(); ?>
                         </div>
                     <?php else: ?>
                         <p class="no-response-yet">
-                            <?php _e('This question is awaiting a response from our team.', 'faq-post-create'); ?>
+                            This question is awaiting a response from our team.
                         </p>
                     <?php endif; ?>
                 </div>

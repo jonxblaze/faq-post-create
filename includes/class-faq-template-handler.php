@@ -27,7 +27,7 @@ class FAQ_Template_Handler {
      */
     public static function display_submission_form($atts) {
         $atts = shortcode_atts(array(
-            'title' => __('Submit Your Question', 'faq-post-create'),
+            'title' => 'Submit Your Question',
             'posts_per_page' => 25,
         ), $atts);
 
@@ -51,22 +51,22 @@ class FAQ_Template_Handler {
 
             <form id="faq-submission" method="post" action="">
                 <p class="faq-form-field">
-                    <label for="faq_full_name"><?php _e('Full Name:', 'faq-post-create'); ?></label>
+                    <label for="faq_full_name">Full Name:</label>
                     <input type="text" id="faq_full_name" name="faq_full_name" value="<?php echo isset($_POST['faq_full_name']) ? esc_attr($_POST['faq_full_name']) : ''; ?>" required />
                 </p>
                 <p class="faq-form-field">
-                    <label for="faq_email"><?php _e('Email Address:', 'faq-post-create'); ?></label>
+                    <label for="faq_email">Email Address:</label>
                     <input type="email" id="faq_email" name="faq_email" value="<?php echo isset($_POST['faq_email']) ? esc_attr($_POST['faq_email']) : ''; ?>" required />
                 </p>
 
                 <!-- Honeypot field for bot detection - should remain empty -->
                 <p class="faq-form-field honeypot">
-                    <label for="faq_company"><?php _e('Company:', 'faq-post-create'); ?></label>
+                    <label for="faq_company">Company:</label>
                     <input type="text" id="faq_company" name="faq_company" value="" autocomplete="off" />
                 </p>
 
                 <p class="faq-form-field">
-                    <label for="faq_question"><?php _e('Question:', 'faq-post-create'); ?></label>
+                    <label for="faq_question">Question:</label>
                     <textarea id="faq_question" name="faq_question" rows="5" required><?php echo isset($_POST['faq_question']) ? esc_textarea($_POST['faq_question']) : ''; ?></textarea>
                 </p>
 
@@ -90,7 +90,7 @@ class FAQ_Template_Handler {
                 <p class="faq-form-submit">
                     <input type="hidden" name="faq_nonce" value="<?php echo wp_create_nonce('faq_nonce'); ?>" />
                     <input type="hidden" name="faq_submit" value="1" />
-                    <input type="submit" id="faq_submit_button" value="<?php _e('Submit Question', 'faq-post-create'); ?>" />
+                    <input type="submit" id="faq_submit_button" value="Submit Question" />
                 </p>
             </form>
 
@@ -99,7 +99,7 @@ class FAQ_Template_Handler {
 
         <!-- Display all FAQ links with truncated titles outside the form -->
         <div id="faqs" class="faq-all-listings">
-            <h3><?php _e('All FAQs', 'faq-post-create'); ?></h3>
+            <h3>All FAQs</h3>
             <div id="faq-list-container">
                 <?php echo self::get_paginated_faq_list($atts['posts_per_page'], 1); ?>
             </div>
@@ -130,7 +130,7 @@ class FAQ_Template_Handler {
         $total_pages = ceil($total_published / $posts_per_page);
 
         if (empty($faqs)) {
-            return '<p>' . __('No FAQs found.', 'faq-post-create') . '</p>';
+            return '<p>No FAQs found.</p>';
         }
 
         $output = '<ul class="faq-list-ul">';

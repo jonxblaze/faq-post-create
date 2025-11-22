@@ -43,8 +43,8 @@ class FAQ_Settings {
      */
     public static function add_settings_page() {
         add_options_page(
-            __('FAQ Settings', 'faq-post-create'),
-            __('FAQ Settings', 'faq-post-create'),
+            'FAQ Settings',
+            'FAQ Settings',
             'manage_options',
             self::SETTINGS_PAGE,
             array(__CLASS__, 'settings_page_html')
@@ -59,14 +59,14 @@ class FAQ_Settings {
 
         add_settings_section(
             'faq_recaptcha_section',
-            __('reCAPTCHA Settings', 'faq-post-create'),
+            'reCAPTCHA Settings',
             array(__CLASS__, 'recaptcha_section_callback'),
             self::SETTINGS_PAGE
         );
 
         add_settings_field(
             'recaptcha_enabled',
-            __('Enable reCAPTCHA', 'faq-post-create'),
+            'Enable reCAPTCHA',
             array(__CLASS__, 'recaptcha_enabled_callback'),
             self::SETTINGS_PAGE,
             'faq_recaptcha_section',
@@ -75,7 +75,7 @@ class FAQ_Settings {
 
         add_settings_field(
             'recaptcha_site_key',
-            __('', 'faq-post-create'),
+            '',
             array(__CLASS__, 'recaptcha_site_key_callback'),
             self::SETTINGS_PAGE,
             'faq_recaptcha_section'
@@ -83,7 +83,7 @@ class FAQ_Settings {
 
         add_settings_field(
             'recaptcha_secret_key',
-            __('', 'faq-post-create'),
+            '',
             array(__CLASS__, 'recaptcha_secret_key_callback'),
             self::SETTINGS_PAGE,
             'faq_recaptcha_section'
@@ -119,7 +119,7 @@ class FAQ_Settings {
      * reCAPTCHA section callback
      */
     public static function recaptcha_section_callback() {
-        echo '<p>' . __('Configure reCAPTCHA settings to protect your FAQ submission form from spam.', 'faq-post-create') . '</p>';
+        echo '<p>Configure reCAPTCHA settings to protect your FAQ submission form from spam.</p>';
     }
 
     /**
@@ -130,7 +130,7 @@ class FAQ_Settings {
         $enabled = isset($settings['recaptcha_enabled']) ? $settings['recaptcha_enabled'] : 0;
         ?>
         <input type="checkbox" name="<?php echo self::OPTION_NAME; ?>[recaptcha_enabled]" id="recaptcha_enabled" value="1" <?php checked(1, $enabled); ?> />
-        <label for="recaptcha_enabled"><?php _e('Enable reCAPTCHA on the FAQ submission form', 'faq-post-create'); ?></label>
+        <label for="recaptcha_enabled">Enable reCAPTCHA on the FAQ submission form</label>
         <script type="text/javascript">
             jQuery(document).ready(function($) {
                 // Set up show/hide logic for reCAPTCHA fields
@@ -169,10 +169,10 @@ class FAQ_Settings {
             }
         </style>
         <tr class="<?php echo $row_class; ?>">
-            <th scope="row"><?php _e('reCAPTCHA Site Key', 'faq-post-create'); ?></th>
+            <th scope="row">reCAPTCHA Site Key</th>
             <td>
                 <input type="text" name="<?php echo self::OPTION_NAME; ?>[recaptcha_site_key]" id="recaptcha_site_key" value="<?php echo esc_attr($site_key); ?>" class="regular-text" />
-                <p class="description"><?php _e('Enter your Google reCAPTCHA v2 site key.', 'faq-post-create'); ?></p>
+                <p class="description">Enter your Google reCAPTCHA v2 site key.</p>
             </td>
         </tr>
         <?php
@@ -187,10 +187,10 @@ class FAQ_Settings {
         $row_class = 'recaptcha-field-row';
         ?>
         <tr class="<?php echo $row_class; ?>">
-            <th scope="row"><?php _e('reCAPTCHA Secret Key', 'faq-post-create'); ?></th>
+            <th scope="row">reCAPTCHA Secret Key</th>
             <td>
                 <input type="password" name="<?php echo self::OPTION_NAME; ?>[recaptcha_secret_key]" id="recaptcha_secret_key" value="<?php echo esc_attr($secret_key); ?>" class="regular-text" />
-                <p class="description"><?php _e('Enter your Google reCAPTCHA v2 secret key.', 'faq-post-create'); ?></p>
+                <p class="description">Enter your Google reCAPTCHA v2 secret key.</p>
             </td>
         </tr>
         <?php

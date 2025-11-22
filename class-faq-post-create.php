@@ -73,7 +73,7 @@ class FAQ_Post_Create {
         // Hook to flush rewrite rules when plugin is initialized
         add_action('init', array($this, 'maybe_flush_rewrite_rules'));
     }
-    
+
     /**
      * Maybe flush rewrite rules on init
      */
@@ -156,12 +156,40 @@ class FAQ_Post_Create {
      */
     public static function activate() {
         // Register the post type during activation to ensure rewrite rules are properly set
-        $args = FAQ_Post_Type::get_post_type_args();
+        // Use static labels during activation to avoid translation issues
+        $args = array(
+            'labels' => array(
+                'name' => 'FAQs',
+                'singular_name' => 'FAQ',
+                'add_new' => 'Add New',
+                'add_new_item' => 'Add New FAQ',
+                'edit_item' => 'Edit FAQ',
+                'new_item' => 'New FAQ',
+                'view_item' => 'View FAQ',
+                'search_items' => 'Search FAQs',
+                'not_found' => 'No FAQs found',
+                'not_found_in_trash' => 'No FAQs found in Trash',
+            ),
+            'public' => true,
+            'publicly_queryable' => true,
+            'show_ui' => true,
+            'show_in_menu' => true,
+            'query_var' => true,
+            'has_archive' => true,
+            'rewrite' => array('slug' => 'faqs', 'with_front' => false),
+            'capability_type' => 'post',
+            'supports' => array('title', 'custom-fields'),
+            'menu_position' => 5,
+            'menu_icon' => 'dashicons-editor-help',
+            'can_export' => true,
+            'show_in_rest' => true,
+        );
+
         register_post_type('faq', $args);
-        
+
         // Set version option
         update_option('faq_post_creator_version', FAQ_Post_Create::get_plugin_version_static());
-        
+
         // Flush rewrite rules
         flush_rewrite_rules();
     }
@@ -172,11 +200,8 @@ class FAQ_Post_Create {
      * @return string The plugin version.
      */
     private function get_plugin_version() {
-        if (!function_exists('get_plugin_data')) {
-            require_once ABSPATH . 'wp-admin/includes/plugin.php';
-        }
-        $plugin_data = get_plugin_data(plugin_dir_path(__FILE__) . 'faq-post-create.php');
-        return $plugin_data['Version'];
+        // Return static version to avoid text domain loading issues
+        return '1.0.4';
     }
 
     /**
@@ -186,10 +211,7 @@ class FAQ_Post_Create {
      * @return string The plugin version.
      */
     public static function get_plugin_version_static() {
-        if (!function_exists('get_plugin_data')) {
-            require_once ABSPATH . 'wp-admin/includes/plugin.php';
-        }
-        $plugin_data = get_plugin_data(plugin_dir_path(__FILE__) . 'faq-post-create.php');
-        return $plugin_data['Version'];
+        // Return static version to avoid text domain loading issues
+        return '1.0.4';
     }
 }

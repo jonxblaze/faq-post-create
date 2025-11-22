@@ -30,42 +30,42 @@ class FAQ_Admin {
     public static function add_faq_response_meta_box() {
         add_meta_box(
             'faq-admin-response',
-            __('Admin Response', 'faq-post-create'),
+            'Admin Response',
             array(__CLASS__, 'faq_response_meta_box_callback'),
             'faq',
             'normal',
             'high'
         );
     }
-    
+
     /**
      * Callback function for the FAQ response meta box
      */
     public static function faq_response_meta_box_callback($post) {
         // Add an nonce field so we can check for it later
         wp_nonce_field('faq_save_response_meta_box', 'faq_response_meta_box_nonce');
-        
+
         // Get the current response value
         $response = get_post_meta($post->ID, '_faq_admin_response', true);
-        
+
         // Display the form
         echo '<table class="form-table">';
         echo '<tr>';
         echo '<td colspan="2">';
         echo '<textarea name="faq_admin_response" rows="10" style="width:100%;">' . esc_textarea($response) . '</textarea>';
-        echo '<p class="description">' . __('Enter your response to this FAQ here. This will be displayed separately from the original question.', 'faq-post-create') . '</p>';
+        echo '<p class="description">Enter your response to this FAQ here. This will be displayed separately from the original question.</p>';
         echo '</td>';
         echo '</tr>';
         echo '</table>';
-        
+
         // Also display the original submission details
         $original_question = $post->post_excerpt ? $post->post_excerpt : get_post_meta($post->ID, '_faq_original_question', true);
-        
+
         echo '<div style="background-color:#f0f0f0; padding:15px; margin-top:15px; border-radius:4px;">';
-        echo '<h3>' . __('User Submission Details', 'faq-post-create') . '</h3>';
-        echo '<p><strong>' . __('Date:', 'faq-post-create') . '</strong> ' . get_the_date() . '</p>';
+        echo '<h3>User Submission Details</h3>';
+        echo '<p><strong>Date:</strong> ' . get_the_date() . '</p>';
         if ($original_question) {
-            echo '<p><strong>' . __('Question:', 'faq-post-create') . '</strong> ' . esc_html($post->post_title) . '</p>';
+            echo '<p><strong>Question:</strong> ' . esc_html($post->post_title) . '</p>';
         }
         echo '</div>';
     }

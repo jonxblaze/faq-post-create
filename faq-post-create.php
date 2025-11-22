@@ -7,8 +7,7 @@
  * Author URI: https://jbwebdev.com
  * Plugin URI:
  * Copyright: 2025 Jon Blaze
- * Text Domain: faq-post-create
- * Domain Path: /languages
+
  */
 
 // Prevent direct access

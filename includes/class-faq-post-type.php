@@ -32,16 +32,16 @@ class FAQ_Post_Type {
     public static function get_post_type_args() {
         return array(
             'labels' => array(
-                'name' => __('FAQs', 'faq-post-create'),
-                'singular_name' => __('FAQ', 'faq-post-create'),
-                'add_new' => __('Add New', 'faq-post-create'),
-                'add_new_item' => __('Add New FAQ', 'faq-post-create'),
-                'edit_item' => __('Edit FAQ', 'faq-post-create'),
-                'new_item' => __('New FAQ', 'faq-post-create'),
-                'view_item' => __('View FAQ', 'faq-post-create'),
-                'search_items' => __('Search FAQs', 'faq-post-create'),
-                'not_found' => __('No FAQs found', 'faq-post-create'),
-                'not_found_in_trash' => __('No FAQs found in Trash', 'faq-post-create'),
+                'name' => 'FAQs',
+                'singular_name' => 'FAQ',
+                'add_new' => 'Add New',
+                'add_new_item' => 'Add New FAQ',
+                'edit_item' => 'Edit FAQ',
+                'new_item' => 'New FAQ',
+                'view_item' => 'View FAQ',
+                'search_items' => 'Search FAQs',
+                'not_found' => 'No FAQs found',
+                'not_found_in_trash' => 'No FAQs found in Trash',
             ),
             'public' => true,
             'publicly_queryable' => true,
@@ -88,8 +88,8 @@ class FAQ_Post_Type {
     public static function activate() {
         // Register the post type to ensure rewrite rules are properly set
         self::register_post_type();
-        
+
         // Set version option
-        update_option('faq_post_creator_version', FAQ_Post_Create::VERSION);
+        update_option('faq_post_creator_version', '1.0.4');
     }
 }
