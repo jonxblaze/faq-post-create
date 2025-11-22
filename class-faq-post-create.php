@@ -201,7 +201,7 @@ class FAQ_Post_Create {
      */
     private function get_plugin_version() {
         // Return static version to avoid text domain loading issues
-        return '1.0.4';
+        return '1.0.5';
     }
 
     /**
@@ -212,6 +212,6 @@ class FAQ_Post_Create {
      */
     public static function get_plugin_version_static() {
         // Return static version to avoid text domain loading issues
-        return '1.0.4';
+        return '1.0.5';
     }
 }

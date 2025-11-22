@@ -4,7 +4,7 @@
 **Tags:** faq, questions, submissions, custom post type, contact form  
 **Requires at least:** 5.0  
 **Tested up to:** 6.4  
-**Stable tag:** 1.0.2
+**Stable tag:** 1.0.5
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,14 @@ All columns except `_faq_email` are required. The import process will map these 
 After importing FAQs or fixing long slugs, you may need to refresh your permalink structure. Go to Settings > Permalinks in your WordPress admin and click "Save Changes" to ensure all FAQ URLs work correctly.
 
 ## Changelog
+
+### 1.0.5
+* Added FAQ Settings as top-level menu in WordPress admin sidebar
+* Moved Import CSV functionality to FAQ Settings submenu
+* Added automatic email notifications to submitters when their questions are answered
+* Enhanced email system compatibility with WP Mail SMTP
+* Improved admin interface organization
+* Added settings link to plugin action links for easy access
 
 ### 1.0.4
 * Added email notifications to admin when new FAQs are submitted
