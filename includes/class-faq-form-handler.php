@@ -318,6 +318,17 @@ class FAQ_Form_Handler {
         // Get admin email address
         $admin_email = get_option('admin_email');
 
+        // Get settings to check for custom notification email
+        if (class_exists('FAQ_Settings')) {
+            $settings = FAQ_Settings::get_settings();
+            $notification_email = !empty($settings['notification_email']) ? $settings['notification_email'] : '';
+        } else {
+            $notification_email = '';
+        }
+
+        // Use custom notification email if set, otherwise use admin email
+        $email_to = !empty($notification_email) ? $notification_email : get_option('admin_email');
+
         // Get site name
         $site_name = get_bloginfo('name');
 
@@ -330,7 +341,7 @@ class FAQ_Form_Handler {
             "<p>Hello,</p>" .
             "<p>A new FAQ question has been submitted on <strong>%s</strong> and requires your attention:</p>" .
             "<table border='0'>" .
-            "<tr><td><strong>Question:</strong> %s</td></tr>" . 
+            "<tr><td><strong>Question:</strong> %s</td></tr>" .
             "<tr><td><strong>Submitted by:</strong> %s</td></tr>" .
             "<tr><td><strong>Submitter's email:</strong> %s</td></tr>" .
             "<tr><td><strong>Submission date:</strong> %s</td></tr>" .
@@ -362,7 +373,7 @@ class FAQ_Form_Handler {
         );
 
         // Send the email
-        $sent = wp_mail($admin_email, $subject, $message, $headers);
+        $sent = wp_mail($email_to, $subject, $message, $headers);
 
         // For debugging, you can temporarily enable this to log the result:
         // error_log('FAQ notification email result: ' . ($sent ? 'SUCCESS' : 'FAILED'));

@@ -88,6 +88,21 @@ class FAQ_Settings {
             self::SETTINGS_PAGE,
             'faq_recaptcha_section'
         );
+
+        add_settings_section(
+            'faq_notification_section',
+            'Notification Settings',
+            array(__CLASS__, 'notification_section_callback'),
+            self::SETTINGS_PAGE
+        );
+
+        add_settings_field(
+            'notification_email',
+            'Notification Email',
+            array(__CLASS__, 'notification_email_callback'),
+            self::SETTINGS_PAGE,
+            'faq_notification_section'
+        );
     }
 
     /**
@@ -110,6 +125,13 @@ class FAQ_Settings {
             $sanitized['recaptcha_secret_key'] = sanitize_text_field($input['recaptcha_secret_key']);
         } else {
             $sanitized['recaptcha_secret_key'] = '';
+        }
+
+        // Sanitize notification email
+        if (isset($input['notification_email']) && !empty(trim($input['notification_email']))) {
+            $sanitized['notification_email'] = sanitize_email($input['notification_email']);
+        } else {
+            $sanitized['notification_email'] = '';
         }
 
         return $sanitized;
@@ -226,6 +248,25 @@ class FAQ_Settings {
                 ?>
             </form>
         </div>
+        <?php
+    }
+
+    /**
+     * Notification section callback
+     */
+    public static function notification_section_callback() {
+        echo '<p>Configure email notification settings for new FAQ questions.</p>';
+    }
+
+    /**
+     * Notification email callback
+     */
+    public static function notification_email_callback() {
+        $settings = self::get_settings();
+        $notification_email = isset($settings['notification_email']) ? $settings['notification_email'] : '';
+        ?>
+        <input type="email" name="<?php echo self::OPTION_NAME; ?>[notification_email]" id="notification_email" value="<?php echo esc_attr($notification_email); ?>" class="regular-text" />
+        <p class="description">Enter the email address where notifications should be sent when a new question is submitted. If left blank, notifications will go to the site admin email.</p>
         <?php
     }
 }
