@@ -29,13 +29,15 @@ class FAQ_Template_Handler {
      */
     public static function display_submission_form($atts) {
         $atts = shortcode_atts(array(
-            'title' => 'Submit Your Question',
+            'title' => '', // Empty default - no title by default
         ), $atts);
 
         ob_start();
         ?>
         <div class="faq-submission-form">
-            <h2><?php echo esc_html($atts['title']); ?></h2>
+            <?php if (!empty($atts['title'])): ?>
+                <h2><?php echo esc_html($atts['title']); ?></h2>
+            <?php endif; ?>
 
             <?php
             // Display success or error messages

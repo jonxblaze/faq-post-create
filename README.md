@@ -4,7 +4,7 @@
 **Tags:** faq, questions, submissions, custom post type, contact form  
 **Requires at least:** 5.0  
 **Tested up to:** 6.4  
-**Stable tag:** 1.0.6
+**Stable tag:** 1.0.7
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -109,6 +109,14 @@ The admin menu appears as "Questions" for simplicity. All other labels in the ad
 Plugin settings are available under "FAQ Settings" in the WordPress admin sidebar. Here you can configure reCAPTCHA settings, notification emails, and access the CSV import tool.
 
 ## Changelog
+
+### 1.0.7
+* **Admin Workflow Improvements**: Added unanswered questions count badge with orange background to admin menu
+* **Display Enhancements**: Changed FAQ list order from newest to oldest (chronological)
+* **List Format**: Converted FAQ list from unordered list to ordered list with numbered items
+* **Flexible Titles**: Made both FAQ form and list titles conditional - only display if title attribute is provided
+* **Admin Restrictions**: Disabled "Add New" functionality from WordPress admin - questions can only be created via frontend form
+* **Archive Control**: Disabled archive index for questions-answered post type with 404 redirect
 
 ### 1.0.6
 * **Code Quality Assurance**: Comprehensive verification of all changes to ensure no code breakages

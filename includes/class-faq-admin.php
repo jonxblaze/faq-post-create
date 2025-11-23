@@ -27,6 +27,9 @@ class FAQ_Admin {
         // Remove "Add New" button from admin
         add_action('admin_menu', array(__CLASS__, 'remove_add_new_menu'));
         add_action('admin_head', array(__CLASS__, 'hide_add_new_button'));
+        
+        // Add unanswered questions count badge to admin menu
+        add_action('admin_menu', array(__CLASS__, 'add_unanswered_count_badge'));
     }
     
     /**
@@ -282,6 +285,46 @@ class FAQ_Admin {
                 .wrap .page-title-action,
                 a.page-title-action {
                     display: none !important;
+                }
+            </style>';
+        }
+    }
+
+    /**
+     * Add unanswered questions count badge to admin menu
+     */
+    public static function add_unanswered_count_badge() {
+        global $menu;
+        
+        // Count draft questions (unanswered questions)
+        $unanswered_count = wp_count_posts('questions-answered')->draft;
+        
+        if ($unanswered_count > 0) {
+            // Find the Questions menu item
+            foreach ($menu as $key => $item) {
+                if ($item[2] === 'edit.php?post_type=questions-answered') {
+                    // Add the count badge with orange background
+                    $menu[$key][0] .= sprintf(
+                        ' <span class="update-plugins count-%d"><span class="plugin-count">%d</span></span>',
+                        $unanswered_count,
+                        $unanswered_count
+                    );
+                    break;
+                }
+            }
+            
+            // Add CSS for orange badge
+            echo '<style type="text/css">
+                #adminmenu .update-plugins.count-' . $unanswered_count . ' {
+                    background-color: #ff8c00 !important;
+                    color: white !important;
+                    border-radius: 10px !important;
+                    padding: 0 6px !important;
+                    font-size: 9px !important;
+                    font-weight: bold !important;
+                    line-height: 17px !important;
+                    vertical-align: top !important;
+                    margin-left: 5px !important;
                 }
             </style>';
         }
