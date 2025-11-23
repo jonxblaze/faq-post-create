@@ -110,7 +110,11 @@ class FAQ_Template_Handler {
         $atts = shortcode_atts(array(
             'title' => '', // Empty default - no title by default
             'posts_per_page' => 25,
+            'display_all' => false, // New parameter to display all FAQs without pagination
         ), $atts);
+
+        // Convert display_all to boolean if it's a string
+        $display_all = filter_var($atts['display_all'], FILTER_VALIDATE_BOOLEAN);
 
         ob_start();
         ?>
@@ -119,11 +123,47 @@ class FAQ_Template_Handler {
                 <h2><?php echo esc_html($atts['title']); ?></h2>
             <?php endif; ?>
             <div id="faq-list-container">
-                <?php echo self::get_paginated_faq_list($atts['posts_per_page'], 1); ?>
+                <?php 
+                if ($display_all) {
+                    echo self::get_all_faqs();
+                } else {
+                    echo self::get_paginated_faq_list($atts['posts_per_page'], 1);
+                }
+                ?>
             </div>
         </div>
         <?php
         return ob_get_clean();
+    }
+
+    /**
+     * Get all published FAQs without pagination
+     */
+    public static function get_all_faqs() {
+        // Query for all published Questions Answered posts
+        $faqs = get_posts(array(
+            'post_type' => 'questions-answered',
+            'post_status' => 'publish',
+            'posts_per_page' => -1, // Get all posts
+            'orderby' => 'post_date',
+            'order' => 'ASC'
+        ));
+
+        if (empty($faqs)) {
+            return '<p>No FAQs found.</p>';
+        }
+
+        $output = '<ol class="faq-list-ol">';
+        foreach ($faqs as $faq) {
+            $title = $faq->post_title;
+            $truncated_title = self::truncate_title($title, 22);
+            $faq_url = get_permalink($faq->ID);
+
+            $output .= '<li><a href="' . esc_url($faq_url) . '" title="'. $title .'">' . esc_html($truncated_title) . '</a></li>';
+        }
+        $output .= '</ol>';
+
+        return $output;
     }
 
     /**
