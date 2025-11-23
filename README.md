@@ -4,7 +4,7 @@
 **Tags:** faq, questions, submissions, custom post type, contact form  
 **Requires at least:** 5.0  
 **Tested up to:** 6.4  
-**Stable tag:** 1.0.5
+**Stable tag:** 1.0.6
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,13 +30,18 @@ The FAQ Post Creator plugin enables visitors to your site to submit questions th
 
 1. Upload the `faq-post-create` folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Use the `[faq_submission_form]` shortcode to display the form on any page or post
+3. Use the `[FAQ_FORM]` shortcode to display the submission form
+4. Use the `[FAQ_LIST]` shortcode to display the list of published FAQs
 
 ## Frequently Asked Questions
 
 ### How do I display the FAQ submission form?
 
-Use the shortcode `[faq_submission_form]` on any page or post where you want the form to appear.
+Use the shortcode `[FAQ_FORM]` on any page or post where you want the form to appear.
+
+### How do I display the list of published FAQs?
+
+Use the shortcode `[FAQ_LIST]` on any page or post where you want the FAQ list to appear.
 
 ### Where do the submitted questions appear?
 
@@ -44,7 +49,13 @@ Submitted questions appear as draft posts in the FAQ section of your WordPress a
 
 ### Can I customize the form?
 
-Yes, you can customize the form title by using the `title` attribute: `[faq_submission_form title="Ask Your Question"]`
+Yes, you can customize the form title by using the `title` attribute: `[FAQ_FORM title="Ask Your Question"]`
+
+### Can I customize the FAQ list?
+
+Yes, you can customize the FAQ list title and number of items per page:
+- `[FAQ_LIST title="Frequently Asked Questions" posts_per_page="10"]`
+- `[FAQ_LIST title="Our Help Center" posts_per_page="50"]`
 
 ### How do admins respond to questions?
 
@@ -73,6 +84,12 @@ After importing FAQs or fixing long slugs, you may need to refresh your permalin
 
 ## Changelog
 
+### 1.0.6
+* **Code Quality Assurance**: Comprehensive verification of all changes to ensure no code breakages
+* **Post Type Consistency**: Updated all references from 'faq' to 'questions-answered' post type
+* **Version Management**: Updated plugin version to 1.0.6 across all files
+* **Documentation**: Updated README with latest version and changelog
+
 ### 1.0.5
 * Added FAQ Settings as top-level menu in WordPress admin sidebar
 * Moved Import CSV functionality to FAQ Settings submenu
@@ -80,6 +97,7 @@ After importing FAQs or fixing long slugs, you may need to refresh your permalin
 * Enhanced email system compatibility with WP Mail SMTP
 * Improved admin interface organization
 * Added settings link to plugin action links for easy access
+* **Separated shortcodes**: `[FAQ_FORM]` for submission form only, `[FAQ_LIST]` for FAQ list only
 
 ### 1.0.4
 * Added email notifications to admin when new FAQs are submitted

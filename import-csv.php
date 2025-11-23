@@ -62,7 +62,7 @@ function slug_exists($slug) {
     global $wpdb;
 
     $post_id = $wpdb->get_var($wpdb->prepare(
-        "SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = 'faq' AND post_status IN ('publish', 'draft', 'pending', 'private')",
+        "SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = 'questions-answered' AND post_status IN ('publish', 'draft', 'pending', 'private')",
         $slug
     ));
 
@@ -127,13 +127,13 @@ function import_faqs_from_csv($csv_file) {
         // Use the CSV post_title as the FAQ question and title
         $question = $data['post_title']; // The original post_title from CSV will be used as the question
 
-        // Create the FAQ post
+        // Create the Questions Answered post
         $post_id = wp_insert_post(array(
             'post_title' => $question, // Use question as title
             'post_content' => $data['post_content'],
             'post_excerpt' => $question, // Store question in excerpt
             'post_status' => 'publish', // Since these are existing FAQs, publish them
-            'post_type' => 'faq',
+            'post_type' => 'questions-answered',
             'post_date' => $post_date,
             'post_date_gmt' => get_gmt_from_date($post_date),
             'post_author' => get_current_user_id(), // Assign to current admin user
@@ -187,8 +187,8 @@ function import_faqs_from_csv($csv_file) {
 add_filter('wp_insert_post_data', 'limit_faq_slug_length', 10, 2);
 
 function limit_faq_slug_length($data, $postarr) {
-    // Only process FAQ posts
-    if ($postarr['post_type'] !== 'faq') {
+    // Only process Questions Answered posts
+    if ($postarr['post_type'] !== 'questions-answered') {
         return $data;
     }
 
@@ -217,9 +217,9 @@ function limit_faq_slug_length($data, $postarr) {
 add_action('parse_request', 'handle_long_faq_slugs');
 
 function handle_long_faq_slugs($wp) {
-    // Only process if it's a FAQ single request with a potentially long slug
-    if (isset($wp->query_vars['faq']) && !empty($wp->query_vars['faq'])) {
-        $faq_slug = $wp->query_vars['faq'];
+    // Only process if it's a Questions Answered single request with a potentially long slug
+    if (isset($wp->query_vars['questions-answered']) && !empty($wp->query_vars['questions-answered'])) {
+        $faq_slug = $wp->query_vars['questions-answered'];
         $slug_parts = explode('-', $faq_slug);
 
         if (count($slug_parts) > 10) {
@@ -229,7 +229,7 @@ function handle_long_faq_slugs($wp) {
             // First, try to find the actual post with the truncated slug
             $shortened_slug = implode('-', array_slice($slug_parts, 0, 10));
             $post_id = $wpdb->get_var($wpdb->prepare(
-                "SELECT ID FROM $wpdb->posts WHERE post_type = 'faq' AND post_status IN ('publish', 'draft', 'pending', 'private') AND post_name LIKE %s",
+                "SELECT ID FROM $wpdb->posts WHERE post_type = 'questions-answered' AND post_status IN ('publish', 'draft', 'pending', 'private') AND post_name LIKE %s",
                 $wpdb->esc_like($shortened_slug) . '%'
             ));
 
@@ -238,7 +238,7 @@ function handle_long_faq_slugs($wp) {
                 for ($i = 9; $i >= 5; $i--) {
                     $test_slug = implode('-', array_slice($slug_parts, 0, $i));
                     $post_id = $wpdb->get_var($wpdb->prepare(
-                        "SELECT ID FROM $wpdb->posts WHERE post_type = 'faq' AND post_status IN ('publish', 'draft', 'pending', 'private') AND post_name LIKE %s",
+                        "SELECT ID FROM $wpdb->posts WHERE post_type = 'questions-answered' AND post_status IN ('publish', 'draft', 'pending', 'private') AND post_name LIKE %s",
                         $wpdb->esc_like($test_slug) . '%'
                     ));
                     if ($post_id) {
@@ -252,11 +252,11 @@ function handle_long_faq_slugs($wp) {
                 $post = get_post($post_id);
                 if ($post) {
                     // Set the correct query variable
-                    $wp->query_vars['faq'] = $post->post_name;
+                    $wp->query_vars['questions-answered'] = $post->post_name;
                     $wp->query_vars['name'] = $post->post_name;
                     // Remove other conflicting query vars
                     unset($wp->query_vars['pagename']);
-                    $wp->query_vars['post_type'] = 'faq';
+                    $wp->query_vars['post_type'] = 'questions-answered';
 
                     // Redirect to the correct URL to prevent the long slug from being used again
                     if (!is_admin()) {
@@ -269,9 +269,9 @@ function handle_long_faq_slugs($wp) {
                 }
             } else {
                 // If the long slug doesn't match any post, maybe it was truncated and we need to try harder
-                // Try to find the post by looking at all FAQ posts and checking if the current slug
+                // Try to find the post by looking at all Questions Answered posts and checking if the current slug
                 // begins with the same first few words as any existing slug
-                $faqs = $wpdb->get_results("SELECT ID, post_name FROM $wpdb->posts WHERE post_type = 'faq' AND post_status IN ('publish', 'draft', 'pending', 'private')");
+                $faqs = $wpdb->get_results("SELECT ID, post_name FROM $wpdb->posts WHERE post_type = 'questions-answered' AND post_status IN ('publish', 'draft', 'pending', 'private')");
 
                 foreach ($faqs as $faq) {
                     $existing_slug_parts = explode('-', $faq->post_name);
@@ -279,10 +279,10 @@ function handle_long_faq_slugs($wp) {
 
                     // Check if the beginning of the requested slug matches an existing post name
                     if ($request_slug_prefix === $faq->post_name) {
-                        $wp->query_vars['faq'] = $faq->post_name;
+                        $wp->query_vars['questions-answered'] = $faq->post_name;
                         $wp->query_vars['name'] = $faq->post_name;
                         unset($wp->query_vars['pagename']);
-                        $wp->query_vars['post_type'] = 'faq';
+                        $wp->query_vars['post_type'] = 'questions-answered';
 
                         // Redirect to the correct URL
                         if (!is_admin()) {
@@ -315,8 +315,8 @@ function handle_faq_404_with_long_slug() {
         $path_info = parse_url($request_uri, PHP_URL_PATH);
         $path_parts = array_filter(explode('/', trim($path_info, '/')));
 
-        // Check if the request is for a FAQ under the faqs base
-        $faq_base_index = array_search('faqs', $path_parts);
+        // Check if the request is for a Questions Answered under the questions-answered base
+        $faq_base_index = array_search('questions-answered', $path_parts);
         if ($faq_base_index !== false && isset($path_parts[$faq_base_index + 1])) {
             $faq_slug = $path_parts[$faq_base_index + 1];
             $slug_parts = explode('-', $faq_slug);
@@ -328,7 +328,7 @@ function handle_faq_404_with_long_slug() {
                 // Try to find the correct post as before
                 $shortened_slug = implode('-', array_slice($slug_parts, 0, 10));
                 $post_id = $wpdb->get_var($wpdb->prepare(
-                    "SELECT ID FROM $wpdb->posts WHERE post_type = 'faq' AND post_status IN ('publish', 'draft', 'pending', 'private') AND post_name LIKE %s",
+                    "SELECT ID FROM $wpdb->posts WHERE post_type = 'questions-answered' AND post_status IN ('publish', 'draft', 'pending', 'private') AND post_name LIKE %s",
                     $wpdb->esc_like($shortened_slug) . '%'
                 ));
 
@@ -337,7 +337,7 @@ function handle_faq_404_with_long_slug() {
                     for ($i = 9; $i >= 5; $i--) {
                         $test_slug = implode('-', array_slice($slug_parts, 0, $i));
                         $post_id = $wpdb->get_var($wpdb->prepare(
-                            "SELECT ID FROM $wpdb->posts WHERE post_type = 'faq' AND post_status IN ('publish', 'draft', 'pending', 'private') AND post_name LIKE %s",
+                            "SELECT ID FROM $wpdb->posts WHERE post_type = 'questions-answered' AND post_status IN ('publish', 'draft', 'pending', 'private') AND post_name LIKE %s",
                             $wpdb->esc_like($test_slug) . '%'
                         ));
                         if ($post_id) {
@@ -363,9 +363,9 @@ function handle_faq_404_with_long_slug() {
  * Function to fix existing FAQ posts with long slugs
  */
 function fix_faq_long_slugs() {
-    // Query for FAQ posts with long slugs
+    // Query for Questions Answered posts with long slugs
     $args = array(
-        'post_type' => 'faq',
+        'post_type' => 'questions-answered',
         'posts_per_page' => -1,
         'post_status' => array('publish', 'draft', 'pending'),
         'no_found_rows' => 1,
@@ -417,7 +417,7 @@ function faq_csv_import_admin_page() {
     
     ?>
     <div class="wrap">
-        <h1>Import FAQs from CSV</h1>
+        <h1>Import Questions Answered from CSV</h1>
         
         <?php if ($result): ?>
             <?php if (isset($result['error'])): ?>
@@ -428,7 +428,7 @@ function faq_csv_import_admin_page() {
                 <div class="notice notice-success">
                     <p><strong>Import completed!</strong></p>
                     <ul>
-                        <li>FAQs imported: <?php echo intval($result['imported']); ?></li>
+                        <li>Questions Answered imported: <?php echo intval($result['imported']); ?></li>
                         <li>Rows skipped: <?php echo intval($result['skipped']); ?></li>
                     </ul>
                     <?php if (!empty($result['errors'])): ?>
@@ -445,12 +445,12 @@ function faq_csv_import_admin_page() {
         
         <div class="card">
             <h2>Import Instructions</h2>
-            <p>This tool will import FAQs from a CSV file into the FAQ custom post type. The CSV should have the following columns:</p>
+            <p>This tool will import Questions Answered from a CSV file into the Questions Answered custom post type. The CSV should have the following columns:</p>
             <ul>
-                <li><strong>created</strong> - Date the FAQ was created</li>
-                <li><strong>post_title</strong> - The title of the FAQ</li>
-                <li><strong>post_content</strong> - The answer/response for the FAQ</li>
-                <li><strong>_faq_email</strong> - (Optional) The email associated with the FAQ</li>
+                <li><strong>created</strong> - Date the question was created</li>
+                <li><strong>post_title</strong> - The title of the question</li>
+                <li><strong>post_content</strong> - The answer/response for the question</li>
+                <li><strong>_faq_email</strong> - (Optional) The email associated with the question</li>
             </ul>
             <p>All columns except _faq_email are required. Rows with missing required fields will be skipped.</p>
         </div>
@@ -463,7 +463,7 @@ function faq_csv_import_admin_page() {
                     <th scope="row">Upload CSV File</th>
                     <td>
                         <input type="file" name="csv_file" accept=".csv" />
-                        <p class="description">Upload a CSV file containing your FAQs.</p>
+                        <p class="description">Upload a CSV file containing your Questions Answered.</p>
                     </td>
                 </tr>
                 <tr>
@@ -475,14 +475,14 @@ function faq_csv_import_admin_page() {
                 </tr>
             </table>
             
-            <?php submit_button('Import FAQs', 'primary', 'import_faqs'); ?>
+            <?php submit_button('Import Questions Answered', 'primary', 'import_faqs'); ?>
 
         <?php if (isset($_POST['fix_long_slugs']) && wp_verify_nonce($_POST['faq_fix_nonce'], 'faq_fix_action')): ?>
             <?php
             $fixed_count = fix_faq_long_slugs();
             ?>
             <div class="notice notice-success">
-                <p>Fixed <?php echo intval($fixed_count); ?> FAQ posts with long slugs.</p>
+                        <p>Fixed <?php echo intval($fixed_count); ?> Questions Answered posts with long slugs.</p>
             </div>
         <?php endif; ?>
     </form>
@@ -490,7 +490,7 @@ function faq_csv_import_admin_page() {
     <h2>Fix Existing Posts</h2>
     <form method="post" action="">
         <?php wp_nonce_field('faq_fix_action', 'faq_fix_nonce'); ?>
-        <p><strong>Fix existing posts:</strong> If you have existing FAQ posts with very long slugs, use this tool to fix them.</p>
+        <p><strong>Fix existing posts:</strong> If you have existing Questions Answered posts with very long slugs, use this tool to fix them.</p>
         <?php submit_button('Fix Long Slugs', 'secondary', 'fix_long_slugs'); ?>
     </form>
 
@@ -509,7 +509,7 @@ function faq_csv_import_admin_page() {
 function add_faq_csv_import_menu() {
     add_submenu_page(
         'faq-settings',
-        'Import FAQs',
+        'Import Questions Answered',
         'Import CSV',
         'manage_options',
         'faq-csv-import',

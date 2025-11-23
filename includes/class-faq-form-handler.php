@@ -112,13 +112,13 @@ class FAQ_Form_Handler {
             // Use question as the post title
             $title = $question;
 
-            // Create the FAQ post as draft - content is managed via custom meta field
+            // Create the Questions Answered post as draft - content is managed via custom meta field
             $post_id = wp_insert_post(array(
                 'post_title' => $title,
                 'post_content' => '',  // Content field not used for this post type
                 'post_excerpt' => $question,  // Store original question in excerpt
                 'post_status' => 'draft',
-                'post_type' => 'faq',
+                'post_type' => 'questions-answered',
                 'post_author' => 0, // No author for anonymous submissions
             ));
 
@@ -185,13 +185,13 @@ class FAQ_Form_Handler {
                 // Use question as the post title
                 $title = $question;
 
-                // Create the FAQ post as draft - content is managed via custom meta field
+                // Create the Questions Answered post as draft - content is managed via custom meta field
                 $post_id = wp_insert_post(array(
                     'post_title' => $title,
                     'post_content' => '',  // Content field not used for this post type
                     'post_excerpt' => $question,  // Store original question in excerpt
                     'post_status' => 'draft',
-                    'post_type' => 'faq',
+                    'post_type' => 'questions-answered',
                     'post_author' => 0, // No author for anonymous submissions
                 ));
 
@@ -347,7 +347,7 @@ class FAQ_Form_Handler {
             "<tr><td><strong>Submission date:</strong> %s</td></tr>" .
             "</table>" .
             "<p>Please review and respond to this question when possible.</p>" .
-            "<p><a href=\"%s\" style=\"display: inline-block; padding: 10px 15px; background-color: #0073aa; color: white; text-decoration: none; border-radius: 4px;\">Manage FAQ Post</a></p>" .
+            "<p><a href=\"%s\" style=\"display: inline-block; padding: 10px 15px; background-color: #0073aa; color: white; text-decoration: none; border-radius: 4px;\">Manage Submitted Question</a></p>" .
             "<p>Best regards,<br />%s</p>" .
             "</body></html>",
             esc_html($site_name),

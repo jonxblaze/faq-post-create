@@ -19,16 +19,17 @@ class FAQ_Template_Handler {
      * Initialize hooks
      */
     public static function init() {
-        // Hooks are handled in FAQ_Post_Type class for single template
+        // Register separate shortcodes for form and list
+        add_shortcode('FAQ_FORM', array(__CLASS__, 'display_submission_form'));
+        add_shortcode('FAQ_LIST', array(__CLASS__, 'display_faq_list'));
     }
     
     /**
-     * Display the FAQ submission form
+     * Display the FAQ submission form (form only)
      */
     public static function display_submission_form($atts) {
         $atts = shortcode_atts(array(
             'title' => 'Submit Your Question',
-            'posts_per_page' => 25,
         ), $atts);
 
         ob_start();
@@ -96,10 +97,23 @@ class FAQ_Template_Handler {
 
             <div id="faq-result"></div>
         </div>
+        <?php
+        return ob_get_clean();
+    }
 
-        <!-- Display all FAQ links with truncated titles outside the form -->
+    /**
+     * Display the FAQ list (list only)
+     */
+    public static function display_faq_list($atts) {
+        $atts = shortcode_atts(array(
+            'title' => 'All FAQs',
+            'posts_per_page' => 25,
+        ), $atts);
+
+        ob_start();
+        ?>
         <div id="faqs" class="faq-all-listings">
-            <h3>All FAQs</h3>
+            <h2><?php echo esc_html($atts['title']); ?></h2>
             <div id="faq-list-container">
                 <?php echo self::get_paginated_faq_list($atts['posts_per_page'], 1); ?>
             </div>
@@ -109,14 +123,14 @@ class FAQ_Template_Handler {
     }
 
     /**
-     * Get a paginated list of published FAQs with truncated titles
+     * Get a paginated list of published Questions Answered with truncated titles
      */
     public static function get_paginated_faq_list($posts_per_page = 25, $page = 1) {
         $offset = ($page - 1) * $posts_per_page;
 
-        // Query for published FAQ posts with pagination
+        // Query for published Questions Answered posts with pagination
         $faqs = get_posts(array(
-            'post_type' => 'faq',
+            'post_type' => 'questions-answered',
             'post_status' => 'publish',
             'posts_per_page' => $posts_per_page,
             'offset' => $offset,
@@ -124,8 +138,8 @@ class FAQ_Template_Handler {
             'order' => 'DESC'
         ));
 
-        // Count total published FAQs for pagination
-        $total_faqs = wp_count_posts('faq');
+        // Count total published Questions Answered for pagination
+        $total_faqs = wp_count_posts('questions-answered');
         $total_published = $total_faqs->publish;
         $total_pages = ceil($total_published / $posts_per_page);
 

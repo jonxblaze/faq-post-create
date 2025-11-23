@@ -23,7 +23,6 @@ class FAQ_Admin {
         add_action('save_post', array(__CLASS__, 'save_faq_response_meta_box'));
         add_action('transition_post_status', array(__CLASS__, 'handle_faq_publish'), 10, 3);
         add_action('wp_after_insert_post', array(__CLASS__, 'handle_faq_save'), 10, 4);
-        add_shortcode('FAQ_FORM', array('FAQ_Template_Handler', 'display_submission_form'));
     }
     
     /**
@@ -34,7 +33,7 @@ class FAQ_Admin {
             'faq-admin-response',
             'Admin Response',
             array(__CLASS__, 'faq_response_meta_box_callback'),
-            'faq',
+            'questions-answered',
             'normal',
             'high'
         );
@@ -92,7 +91,7 @@ class FAQ_Admin {
         }
 
         // Check the user's permissions.
-        if (isset($_POST['post_type']) && 'faq' === $_POST['post_type']) {
+        if (isset($_POST['post_type']) && 'questions-answered' === $_POST['post_type']) {
             if (!current_user_can('edit_page', $post_id)) {
                 return;
             }
@@ -113,8 +112,8 @@ class FAQ_Admin {
      * Handle FAQ post save and check if we need to send notification
      */
     public static function handle_faq_save($post_id, $post, $update, $post_before) {
-        // Only process FAQ posts
-        if ($post->post_type !== 'faq') {
+        // Only process Questions Answered posts
+        if ($post->post_type !== 'questions-answered') {
             return;
         }
 
@@ -147,8 +146,8 @@ class FAQ_Admin {
      * Handle FAQ post publishing and send notification to submitter
      */
     public static function handle_faq_publish($new_status, $old_status, $post) {
-        // Only process FAQ posts
-        if ($post->post_type !== 'faq') {
+        // Only process Questions Answered posts
+        if ($post->post_type !== 'questions-answered') {
             return;
         }
 

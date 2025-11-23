@@ -32,16 +32,16 @@ class FAQ_Post_Type {
     public static function get_post_type_args() {
         return array(
             'labels' => array(
-                'name' => 'FAQs',
-                'singular_name' => 'FAQ',
+                'name' => 'Questions Answered',
+                'singular_name' => 'Question Answered',
                 'add_new' => 'Add New',
-                'add_new_item' => 'Add New FAQ',
-                'edit_item' => 'Edit FAQ',
-                'new_item' => 'New FAQ',
-                'view_item' => 'View FAQ',
-                'search_items' => 'Search FAQs',
-                'not_found' => 'No FAQs found',
-                'not_found_in_trash' => 'No FAQs found in Trash',
+                'add_new_item' => 'Add New Question Answered',
+                'edit_item' => 'Edit Question Answered',
+                'new_item' => 'New Question Answered',
+                'view_item' => 'View Question Answered',
+                'search_items' => 'Search Questions Answered',
+                'not_found' => 'No questions answered found',
+                'not_found_in_trash' => 'No questions answered found in Trash',
             ),
             'public' => true,
             'publicly_queryable' => true,
@@ -49,7 +49,7 @@ class FAQ_Post_Type {
             'show_in_menu' => true,
             'query_var' => true,
             'has_archive' => true,
-            'rewrite' => array('slug' => 'faqs', 'with_front' => false),
+            'rewrite' => array('slug' => 'questions-answered', 'with_front' => false),
             'capability_type' => 'post',
             'has_archive' => true,
             'supports' => array('title', 'custom-fields'), // Removed editor to use our custom meta box
@@ -61,18 +61,18 @@ class FAQ_Post_Type {
     }
     
     /**
-     * Register the custom post type for FAQs
+     * Register the custom post type for Questions Answered
      */
     public static function register_post_type() {
         $args = self::get_post_type_args();
-        register_post_type('faq', $args);
+        register_post_type('questions-answered', $args);
     }
     
     /**
-     * Load custom template for single FAQ posts
+     * Load custom template for single Questions Answered posts
      */
     public static function faq_single_template($template) {
-        if (is_singular('faq')) {
+        if (is_singular('questions-answered')) {
             // Include the template file
             $template_path = plugin_dir_path(__FILE__) . '../templates/single-faq.php';
             if (file_exists($template_path)) {

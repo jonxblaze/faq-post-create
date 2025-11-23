@@ -159,16 +159,16 @@ class FAQ_Post_Create {
         // Use static labels during activation to avoid translation issues
         $args = array(
             'labels' => array(
-                'name' => 'FAQs',
-                'singular_name' => 'FAQ',
+                'name' => 'Questions Answered',
+                'singular_name' => 'Question Answered',
                 'add_new' => 'Add New',
-                'add_new_item' => 'Add New FAQ',
-                'edit_item' => 'Edit FAQ',
-                'new_item' => 'New FAQ',
-                'view_item' => 'View FAQ',
-                'search_items' => 'Search FAQs',
-                'not_found' => 'No FAQs found',
-                'not_found_in_trash' => 'No FAQs found in Trash',
+                'add_new_item' => 'Add New Question Answered',
+                'edit_item' => 'Edit Question Answered',
+                'new_item' => 'New Question Answered',
+                'view_item' => 'View Question Answered',
+                'search_items' => 'Search Questions Answered',
+                'not_found' => 'No questions answered found',
+                'not_found_in_trash' => 'No questions answered found in Trash',
             ),
             'public' => true,
             'publicly_queryable' => true,
@@ -176,7 +176,7 @@ class FAQ_Post_Create {
             'show_in_menu' => true,
             'query_var' => true,
             'has_archive' => true,
-            'rewrite' => array('slug' => 'faqs', 'with_front' => false),
+            'rewrite' => array('slug' => 'questions-answered', 'with_front' => false),
             'capability_type' => 'post',
             'supports' => array('title', 'custom-fields'),
             'menu_position' => 5,
@@ -185,7 +185,7 @@ class FAQ_Post_Create {
             'show_in_rest' => true,
         );
 
-        register_post_type('faq', $args);
+        register_post_type('questions-answered', $args);
 
         // Set version option
         update_option('faq_post_creator_version', FAQ_Post_Create::get_plugin_version_static());
@@ -201,7 +201,7 @@ class FAQ_Post_Create {
      */
     private function get_plugin_version() {
         // Return static version to avoid text domain loading issues
-        return '1.0.5';
+        return '1.0.6';
     }
 
     /**
@@ -212,6 +212,6 @@ class FAQ_Post_Create {
      */
     public static function get_plugin_version_static() {
         // Return static version to avoid text domain loading issues
-        return '1.0.5';
+        return '1.0.6';
     }
 }
