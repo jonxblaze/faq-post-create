@@ -32,10 +32,10 @@ class FAQ_Post_Type {
     public static function get_post_type_args() {
         return array(
             'labels' => array(
-                'name' => 'Questions Answered',
+                'name' => 'Questions',
                 'singular_name' => 'Question Answered',
-                'add_new' => 'Add New',
-                'add_new_item' => 'Add New Question Answered',
+                'add_new' => null, // Disable "Add New" from admin
+                'add_new_item' => null, // Disable "Add New Question Answered"
                 'edit_item' => 'Edit Question Answered',
                 'new_item' => 'New Question Answered',
                 'view_item' => 'View Question Answered',

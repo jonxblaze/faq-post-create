@@ -23,6 +23,10 @@ class FAQ_Admin {
         add_action('save_post', array(__CLASS__, 'save_faq_response_meta_box'));
         add_action('transition_post_status', array(__CLASS__, 'handle_faq_publish'), 10, 3);
         add_action('wp_after_insert_post', array(__CLASS__, 'handle_faq_save'), 10, 4);
+        
+        // Remove "Add New" button from admin
+        add_action('admin_menu', array(__CLASS__, 'remove_add_new_menu'));
+        add_action('admin_head', array(__CLASS__, 'hide_add_new_button'));
     }
     
     /**
@@ -246,5 +250,40 @@ class FAQ_Admin {
         remove_filter('wp_mail_content_type', function() { return 'text/html'; });
 
         return $sent;
+    }
+
+    /**
+     * Remove "Add New" submenu from admin
+     */
+    public static function remove_add_new_menu() {
+        global $submenu;
+        
+        // Remove "Add New" from Questions menu
+        if (isset($submenu['edit.php?post_type=questions-answered'])) {
+            foreach ($submenu['edit.php?post_type=questions-answered'] as $key => $item) {
+                if ($item[2] === 'post-new.php?post_type=questions-answered') {
+                    unset($submenu['edit.php?post_type=questions-answered'][$key]);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Hide "Add New" button from admin screens
+     */
+    public static function hide_add_new_button() {
+        global $pagenow, $typenow;
+        
+        // Only apply to Questions Answered post type
+        if ($typenow === 'questions-answered') {
+            echo '<style type="text/css">
+                .page-title-action, 
+                .wrap .page-title-action,
+                a.page-title-action {
+                    display: none !important;
+                }
+            </style>';
+        }
     }
 }
