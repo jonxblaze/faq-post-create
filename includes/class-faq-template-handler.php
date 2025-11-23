@@ -106,14 +106,16 @@ class FAQ_Template_Handler {
      */
     public static function display_faq_list($atts) {
         $atts = shortcode_atts(array(
-            'title' => 'All FAQs',
+            'title' => '', // Empty default - no title by default
             'posts_per_page' => 25,
         ), $atts);
 
         ob_start();
         ?>
         <div id="faqs" class="faq-all-listings">
-            <h2><?php echo esc_html($atts['title']); ?></h2>
+            <?php if (!empty($atts['title'])): ?>
+                <h2><?php echo esc_html($atts['title']); ?></h2>
+            <?php endif; ?>
             <div id="faq-list-container">
                 <?php echo self::get_paginated_faq_list($atts['posts_per_page'], 1); ?>
             </div>
@@ -135,7 +137,7 @@ class FAQ_Template_Handler {
             'posts_per_page' => $posts_per_page,
             'offset' => $offset,
             'orderby' => 'post_date',
-            'order' => 'DESC'
+            'order' => 'ASC' // Changed from DESC to ASC for oldest to newest
         ));
 
         // Count total published Questions Answered for pagination
@@ -147,7 +149,7 @@ class FAQ_Template_Handler {
             return '<p>No FAQs found.</p>';
         }
 
-        $output = '<ul class="faq-list-ul">';
+        $output = '<ol class="faq-list-ol">';
         foreach ($faqs as $faq) {
             $title = $faq->post_title;
             $truncated_title = self::truncate_title($title, 22);
@@ -155,7 +157,7 @@ class FAQ_Template_Handler {
 
             $output .= '<li><a href="' . esc_url($faq_url) . '" title="'. $title .'">' . esc_html($truncated_title) . '</a></li>';
         }
-        $output .= '</ul>';
+        $output .= '</ol>';
 
         // Add pagination controls
         $output .= self::get_pagination_controls($page, $total_pages, $posts_per_page);

@@ -195,22 +195,24 @@
     padding-bottom: 0.5rem;
 }
 
-.entry-content .faq-list-ul {
-    list-style-type: none;
-    padding-left: 0;
+.entry-content .faq-list-ol {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+    counter-reset: faq-counter;
 }
 
-.entry-content .faq-list-ul li {
+.entry-content .faq-list-ol li {
     margin-bottom: 0.5rem;
     padding: 0.25rem 0;
     border-bottom: 1px dashed #eee;
+    counter-increment: faq-counter;
 }
 
-.entry-content .faq-list-ul li:last-child {
+.entry-content .faq-list-ol li:last-child {
     border-bottom: none;
 }
 
-.entry-content .faq-list-ul li a {
+.entry-content .faq-list-ol li a {
     display: grid;
     grid-template-columns: auto 1fr;
     align-items: start;
@@ -222,13 +224,9 @@
     text-transform: capitalize;
 }
 
-.entry-content .faq-list-ul li a::before {
-    content: "\f059";
-    font-family: "Font Awesome 6 Free";
-    font-weight: 900;
-}
 
-.entry-content .faq-list-ul li a:hover {
+
+.entry-content .faq-list-ol li a:hover {
     background-color: #e9e9e9;
     border-radius: 3px;
 }
