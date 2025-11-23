@@ -175,7 +175,7 @@ class FAQ_Post_Create {
             'show_ui' => true,
             'show_in_menu' => true,
             'query_var' => true,
-            'has_archive' => true,
+            'has_archive' => false, // Disable archive index
             'rewrite' => array('slug' => 'questions-answered', 'with_front' => false),
             'capability_type' => 'post',
             'supports' => array('title', 'custom-fields'),

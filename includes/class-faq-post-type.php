@@ -24,6 +24,9 @@ class FAQ_Post_Type {
         
         // Handle single template
         add_filter('single_template', array(__CLASS__, 'faq_single_template'));
+        
+        // Redirect archive requests to 404
+        add_action('template_redirect', array(__CLASS__, 'redirect_archive_to_404'));
     }
     
     /**
@@ -48,10 +51,9 @@ class FAQ_Post_Type {
             'show_ui' => true,
             'show_in_menu' => true,
             'query_var' => true,
-            'has_archive' => true,
+            'has_archive' => false, // Disable archive index
             'rewrite' => array('slug' => 'questions-answered', 'with_front' => false),
             'capability_type' => 'post',
-            'has_archive' => true,
             'supports' => array('title', 'custom-fields'), // Removed editor to use our custom meta box
             'menu_position' => 5,
             'menu_icon' => 'dashicons-editor-help',
@@ -82,6 +84,19 @@ class FAQ_Post_Type {
         return $template;
     }
     
+    /**
+     * Redirect archive requests to 404
+     */
+    public static function redirect_archive_to_404() {
+        if (is_post_type_archive('questions-answered')) {
+            global $wp_query;
+            $wp_query->set_404();
+            status_header(404);
+            get_template_part(404);
+            exit;
+        }
+    }
+
     /**
      * Plugin activation tasks
      */

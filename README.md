@@ -16,7 +16,7 @@ The FAQ Post Creator plugin enables visitors to your site to submit questions th
 
 ### Features:
 * Front-end form for question submission (Full Name, Email, Question)
-* Custom post type for FAQs with special single post template
+* Custom post type "Questions Answered" with special single post template
 * Draft posts for admin review
 * Honeypot field for bot detection
 * AJAX form submission
@@ -25,6 +25,12 @@ The FAQ Post Creator plugin enables visitors to your site to submit questions th
 * Publication date display
 * Responsive design
 * CSV import functionality for migrating existing FAQs
+* **Admin-only question creation** - Questions can only be created via frontend form
+* **Clean admin interface** - Simplified "Questions" menu without "Add New" option
+* **No archive index** - Individual question pages only, no bulk listing
+* **Email notifications** - Automatic emails to submitters when questions are answered
+* **reCAPTCHA integration** - Optional spam protection
+* **Separated shortcodes** - `[FAQ_FORM]` for form, `[FAQ_LIST]` for paginated list
 
 ## Installation
 
@@ -81,6 +87,26 @@ The plugin includes a CSV import feature to migrate existing FAQs. Go to FAQ > I
 All columns except `_faq_email` are required. The import process will map these fields to the appropriate custom post type fields and meta fields used by the plugin.
 
 After importing FAQs or fixing long slugs, you may need to refresh your permalink structure. Go to Settings > Permalinks in your WordPress admin and click "Save Changes" to ensure all FAQ URLs work correctly.
+
+### Why can't I create new questions from the WordPress admin?
+
+The plugin is designed to only accept questions through the frontend submission form. This ensures that all questions come from actual users with proper contact information (name and email). Admins can only edit, respond to, and publish existing questions.
+
+### What happens if someone tries to access the questions archive page?
+
+The archive index for questions has been disabled. If someone tries to access `/questions-answered/`, they will receive a 404 error. Questions are only accessible individually or through the paginated list provided by the `[FAQ_LIST]` shortcode.
+
+### How do email notifications work?
+
+When a new question is submitted, the site admin receives an email notification. When an admin responds to a question and publishes it, the original submitter automatically receives an email with the response and a link to view their answered question.
+
+### Can I change the admin menu name?
+
+The admin menu appears as "Questions" for simplicity. All other labels in the admin interface use the full "Question Answered" terminology for clarity. This cannot be customized without modifying the plugin code.
+
+### Where are the plugin settings located?
+
+Plugin settings are available under "FAQ Settings" in the WordPress admin sidebar. Here you can configure reCAPTCHA settings, notification emails, and access the CSV import tool.
 
 ## Changelog
 
